@@ -1,0 +1,25 @@
+# Core dependencies
+beautifulsoup4
+fastapi
+icecream
+loguru
+pandas
+polars
+pydantic
+uvicorn
+websockets
+lxml
+opencv-python-headless
+rich
+httpx
+azure-storage-blob
+azure-identity
+python-dotenv
+
+# CPU-only PyTorch (install first)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0+cpu
+torchvision==0.16.0+cpu
+
+# YOLO with CPU support
+ultralytics

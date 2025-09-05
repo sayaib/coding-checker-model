@@ -1,0 +1,17 @@
+beautifulsoup4
+fastapi
+icecream
+loguru
+pandas
+polars
+pydantic
+uvicorn
+websockets
+lxml
+opencv-python
+rich
+httpx
+azure-storage-blob
+azure-identity
+python-dotenv
+ultralytics

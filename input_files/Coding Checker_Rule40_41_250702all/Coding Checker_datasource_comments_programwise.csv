@@ -1,0 +1,604 @@
+﻿PROGRAM,BODY,RUNG,OBJECT_TYPE_LIST,ATTRIBUTES
+P000_InitialSetting,Initial,1,Data Source/Sink Comments,■初期設定 =INITIAL SETTING
+P000_InitialSetting,Initial,6,Data Source/Sink Comments,"■爆発・火災警告コイル =FIRE HAZARD WARNING COIL
+　　爆発・火災リスクのある重要箇所の明示用接点"
+P000_InitialSetting,Initial,11,Data Source/Sink Comments,"■設計用ｺｲﾙ =DESIGN COIL
+        設計上の改造・変更箇所の明示、回路切替用接点"
+P000_InitialSetting,Initial,19,Data Source/Sink Comments,"■調整用ｺｲﾙ =ADJUSTMENT COIL
+        調整中の一時的な回路無効化/有効化、変更箇所の明示"
+P000_InitialSetting,Initial,29,Data Source/Sink Comments,■独立制御機器　監視タイマ設定　=IndependentControlDevice StopFault TimerSetting
+P000_InitialSetting,Fault,1,Data Source/Sink Comments,"■異常解除 =FAULT RESET
+        P000_InitialSetting内で発生した異常をリセットする"
+P000_InitialSetting,Fault,2,Data Source/Sink Comments,"■緊急停止異常 =EMERGENCY STOP 
+        _PLC_ErrSta: PLC機能ﾓｼﾞｭｰﾙ異常ｽﾃｰﾀｽ =PLC FUNCTION MODULE FAULT STATUS
+　　　(7bit: 全停止ﾌｫｰﾙﾄ ﾕｰｻﾞﾌﾟﾛｸﾞﾗﾑ停止するため表示不可 / 6bit: 部分停止ﾌｫｰﾙﾄ / 5bit: 軽度ﾌｫｰﾙﾄ / 4bit: 監視情報(警報異常) / 他：予約)"
+P000_InitialSetting,Fault,3,Data Source/Sink Comments,"_EIP_ErrSta: 内蔵EtherNet/IP異常ｽﾃｰﾀｽ =BUILD IN EtherNet/IP FAULT STATUS
+　　　(7bit: 全停止ﾌｫｰﾙﾄ ﾕｰｻﾞﾌﾟﾛｸﾞﾗﾑ停止するため表示不可 / 6bit: 部分停止ﾌｫｰﾙﾄ / 5bit: 軽度ﾌｫｰﾙﾄ(警報異常) / 4bit: 監視情報(警報異常) / 他：予約)"
+P000_InitialSetting,Fault,4,Data Source/Sink Comments,"_EC_ErrSta: 内蔵EtherCAT異常ｽﾃｰﾀｽ =BUILD IN EtherCAT FAULT STATUS
+　　　(7bit: 全停止ﾌｫｰﾙﾄ-ﾕｰｻﾞﾌﾟﾛｸﾞﾗﾑ停止するため表示不可 / 6bit: 部分停止ﾌｫｰﾙﾄ / 5bit: 軽度ﾌｫｰﾙﾄ(警報異常) / 4bit: 監視情報(警報異常) / 他：予約)
+
+　　_EC_PDActive:  ﾌﾟﾛｾｽﾃﾞｰﾀ通信ｽﾃｰﾀｽ =PROCESS DATA COMMUNICATION STATUS
+　　　ONで通信正常。EtherCAT機器未使用時はOFFのため_EC_PDActive信号をすべて削除してください 
+　　　ON is communication normal. If not in use EtherCAT device, delete _EC_PDActive due to turn it off."
+P000_InitialSetting,Fault,6,Data Source/Sink Comments,"_EIP_ErrSta: 内蔵EtherNet/IP異常ｽﾃｰﾀｽ =BUILD IN EtherNet/IP FAULT STATUS
+　　　(5bit: 軽度ﾌｫｰﾙﾄ)"
+P000_InitialSetting,Fault,9,Data Source/Sink Comments,"_EC_ErrSta: 内蔵EtherCAT異常ｽﾃｰﾀｽ =BUILD IN EtherCAT FAULT STATUS
+　　　(5bit: 軽度ﾌｫｰﾙﾄ)"
+P000_InitialSetting,Fault,12,Data Source/Sink Comments,"_PLC_ErrSta: PLC機能ﾓｼﾞｭｰﾙ異常ｽﾃｰﾀｽ =PLC FUNCTION MODULE FAULT STATUS
+　　　(4bit: 監視情報)"
+P000_InitialSetting,Fault,15,Data Source/Sink Comments,"_EIP_ErrSta: 内蔵EtherNet/IP異常ｽﾃｰﾀｽ =BUILD IN EtherNet/IP FAULT STATUS
+　　　(4bit: 監視情報)"
+P000_InitialSetting,Fault,18,Data Source/Sink Comments,"_EC_ErrSta: 内蔵EtherCAT異常ｽﾃｰﾀｽ =BUILD IN EtherCAT FAULT STATUS
+　　　(4bit: 監視情報)"
+P000_InitialSetting,Fault,21,Data Source/Sink Comments,- PLCﾊﾞｯﾃﾘ交換 =PLC BATTERY REPLACE
+P000_InitialSetting,Fault,25,Data Source/Sink Comments,■緊急停止まとめ =EMERGENCY STOP TOTAL
+P000_InitialSetting,Fault,29,Data Source/Sink Comments,■自動停止まとめ =AUTO STOP TOTAL
+P000_InitialSetting,Fault,32,Data Source/Sink Comments,■ｻｲｸﾙ停止まとめ =CYCLE STOP TOTAL
+P000_InitialSetting,Fault,35,Data Source/Sink Comments,■異常停止まとめ =FAULT STOP TOTAL
+P000_InitialSetting,Fault,38,Data Source/Sink Comments,■予告警報まとめ =WARNING TOTAL
+P000_InitialSetting,Fault,43,Data Source/Sink Comments,■異常まとめ
+P000_InitialSetting,Output,1,Data Source/Sink Comments,■各Mainへ出力 =MODULE OUTPUT
+P002_ServoAdjustment,Initial,1,Data Source/Sink Comments,■軸番号(１～32) =AXIS No.(1-32)
+P002_ServoAdjustment,Fault,2,Data Source/Sink Comments,■軸1 =AXIS 1
+P002_ServoAdjustment,Fault,3,Data Source/Sink Comments,■軸2 =AXIS 2
+P002_ServoAdjustment,Fault,4,Data Source/Sink Comments,■軸3 =AXIS 3
+P002_ServoAdjustment,Fault,5,Data Source/Sink Comments,■軸4 =AXIS 4
+P002_ServoAdjustment,Fault,6,Data Source/Sink Comments,■軸5 =AXIS 5
+P002_ServoAdjustment,Fault,7,Data Source/Sink Comments,■軸6 =AXIS 6
+P002_ServoAdjustment,Fault,8,Data Source/Sink Comments,■軸7 =AXIS 7
+P002_ServoAdjustment,Fault,9,Data Source/Sink Comments,■軸8 =AXIS 8
+P002_ServoAdjustment,Fault,10,Data Source/Sink Comments,■軸9 =AXIS 9
+P002_ServoAdjustment,Fault,11,Data Source/Sink Comments,■軸10 =AXIS 10
+P002_ServoAdjustment,Fault,12,Data Source/Sink Comments,■軸11 =AXIS 11
+P002_ServoAdjustment,Fault,13,Data Source/Sink Comments,■軸12 =AXIS 12
+P002_ServoAdjustment,Fault,14,Data Source/Sink Comments,■軸13 =AXIS 13
+P002_ServoAdjustment,Fault,15,Data Source/Sink Comments,■軸14 =AXIS 14
+P002_ServoAdjustment,Fault,16,Data Source/Sink Comments,■軸15 =AXIS 15
+P002_ServoAdjustment,Fault,17,Data Source/Sink Comments,■軸16 =AXIS 16
+P002_ServoAdjustment,Fault,18,Data Source/Sink Comments,■軸17 =AXIS 17
+P002_ServoAdjustment,Fault,19,Data Source/Sink Comments,■軸18 =AXIS 18
+P002_ServoAdjustment,Fault,20,Data Source/Sink Comments,■軸19 =AXIS 19
+P002_ServoAdjustment,Fault,21,Data Source/Sink Comments,■軸20 =AXIS 20
+P002_ServoAdjustment,Fault,22,Data Source/Sink Comments,■軸21 =AXIS 21
+P002_ServoAdjustment,Fault,23,Data Source/Sink Comments,■軸22 =AXIS 22
+P002_ServoAdjustment,Fault,24,Data Source/Sink Comments,■軸23 =AXIS 23
+P002_ServoAdjustment,Fault,25,Data Source/Sink Comments,■軸24 =AXIS 24
+P002_ServoAdjustment,Fault,26,Data Source/Sink Comments,■軸25 =AXIS 25
+P002_ServoAdjustment,Fault,27,Data Source/Sink Comments,■軸26 =AXIS 26
+P002_ServoAdjustment,Fault,28,Data Source/Sink Comments,■軸27 =AXIS 27
+P002_ServoAdjustment,Fault,29,Data Source/Sink Comments,■軸28 =AXIS 28
+P002_ServoAdjustment,Fault,30,Data Source/Sink Comments,■軸29 =AXIS 29
+P002_ServoAdjustment,Fault,31,Data Source/Sink Comments,■軸30 =AXIS 30
+P002_ServoAdjustment,Fault,32,Data Source/Sink Comments,■軸31 =AXIS 31
+P002_ServoAdjustment,Fault,33,Data Source/Sink Comments,■軸32 =AXIS 32
+P002_ServoAdjustment,Fault,34,Data Source/Sink Comments,■緊急停止 =EMERGENCY STOP
+P002_ServoAdjustment,Fault,46,Data Source/Sink Comments,■ｻｲｸﾙ停止 =CYCLE STOP
+P002_ServoAdjustment,Fault,58,Data Source/Sink Comments,■予告警報 =WARNING
+P002_ServoAdjustment,Fault,71,Data Source/Sink Comments,■緊急停止総合 =EMERGENCY STOP TOTAL
+P002_ServoAdjustment,Fault,72,Data Source/Sink Comments,■ｻｲｸﾙ停止総合 =CYCLE STOP TOTAL
+P002_ServoAdjustment,Fault,73,Data Source/Sink Comments,■予告警告総合 =WARNING TOTAL
+P002_ServoAdjustment,ServoAdjustment,2,Data Source/Sink Comments,全軸ｻｰﾎﾞﾛｯｸ判定 =ALL AXIS SERVO LOCK JUDGMENT
+P002_ServoAdjustment,ServoAdjustment,3,Data Source/Sink Comments,全軸ｻｰﾎﾞ自動ﾓｰﾄﾞ =ALL AXIS SERVO AUTO MODE
+P002_ServoAdjustment,ServoAdjustment,4,Data Source/Sink Comments,ｻｰﾎﾞﾊﾞｯﾃﾘ交換Off =SERVO BATTERY CHANGE OFF
+P002_ServoAdjustment,MD_Out,12,Data Source/Sink Comments,"ﾌﾞﾚｰｷ強制解除 =BRAKE FORCED RELEASE
+　・1Sｼﾘｰｽﾞ:b接点（GB002_0xx OFFでﾌﾞﾚｰｷ解除）
+　・G5ｼﾘｰｽﾞ:a接点（GB002_0xx ONでﾌﾞﾚｰｷ解除）"
+P003_Servo_Out,MD_Out,1,Data Source/Sink Comments,■ﾌﾞﾚｰｷ解除ﾘﾚｰﾃﾞﾊﾞｲｽ出力回路 =BRAKE RELEASE RELAY DEVICE OUTPUT
+P009_Operation_Assist,Preparation,1,Data Source/Sink Comments,1-1
+P009_Operation_Assist,Preparation,6,Data Source/Sink Comments,1-2
+P009_Operation_Assist,Preparation,11,Data Source/Sink Comments,1-3
+P009_Operation_Assist,Preparation,16,Data Source/Sink Comments,1-4
+P009_Operation_Assist,Preparation,21,Data Source/Sink Comments,1-5
+P009_Operation_Assist,Preparation,26,Data Source/Sink Comments,1-6
+P009_Operation_Assist,Preparation,31,Data Source/Sink Comments,2-1
+P009_Operation_Assist,Preparation,36,Data Source/Sink Comments,2-2
+P009_Operation_Assist,Preparation,41,Data Source/Sink Comments,2-3
+P009_Operation_Assist,Preparation,46,Data Source/Sink Comments,2-4
+P009_Operation_Assist,Preparation,51,Data Source/Sink Comments,2-5
+P009_Operation_Assist,Preparation,56,Data Source/Sink Comments,2-6
+P009_Operation_Assist,Preparation,61,Data Source/Sink Comments,3-1
+P009_Operation_Assist,Preparation,66,Data Source/Sink Comments,3-2
+P009_Operation_Assist,Preparation,71,Data Source/Sink Comments,3-3
+P009_Operation_Assist,Preparation,76,Data Source/Sink Comments,3-4
+P009_Operation_Assist,Preparation,81,Data Source/Sink Comments,3-5
+P009_Operation_Assist,Preparation,86,Data Source/Sink Comments,3-6
+P009_Operation_Assist,Preparation,91,Data Source/Sink Comments,4-1
+P009_Operation_Assist,Preparation,96,Data Source/Sink Comments,4-2
+P009_Operation_Assist,Preparation,101,Data Source/Sink Comments,4-3
+P009_Operation_Assist,Preparation,106,Data Source/Sink Comments,4-4
+P009_Operation_Assist,Preparation,111,Data Source/Sink Comments,4-5
+P009_Operation_Assist,Preparation,116,Data Source/Sink Comments,4-6
+P009_Operation_Assist,Preparation,121,Data Source/Sink Comments,5-1
+P009_Operation_Assist,Preparation,126,Data Source/Sink Comments,5-2
+P009_Operation_Assist,Preparation,131,Data Source/Sink Comments,5-3
+P009_Operation_Assist,Preparation,136,Data Source/Sink Comments,5-4
+P009_Operation_Assist,Preparation,141,Data Source/Sink Comments,5-5
+P009_Operation_Assist,Preparation,146,Data Source/Sink Comments,5-6
+P009_Operation_Assist,Preparation,151,Data Source/Sink Comments,6-1
+P009_Operation_Assist,Preparation,156,Data Source/Sink Comments,6-2
+P009_Operation_Assist,Preparation,161,Data Source/Sink Comments,6-3
+P009_Operation_Assist,Preparation,166,Data Source/Sink Comments,6-4
+P009_Operation_Assist,Preparation,171,Data Source/Sink Comments,6-5
+P009_Operation_Assist,Preparation,176,Data Source/Sink Comments,6-6
+P009_Operation_Assist,Preparation,181,Data Source/Sink Comments,7-1
+P009_Operation_Assist,Preparation,186,Data Source/Sink Comments,7-2
+P009_Operation_Assist,Preparation,191,Data Source/Sink Comments,7-3
+P009_Operation_Assist,Preparation,196,Data Source/Sink Comments,7-4
+P009_Operation_Assist,Preparation,201,Data Source/Sink Comments,7-5
+P009_Operation_Assist,Preparation,206,Data Source/Sink Comments,7-6
+P009_Operation_Assist,Preparation,211,Data Source/Sink Comments,8-1
+P009_Operation_Assist,Preparation,216,Data Source/Sink Comments,8-2
+P009_Operation_Assist,Preparation,221,Data Source/Sink Comments,8-3
+P009_Operation_Assist,Preparation,226,Data Source/Sink Comments,8-4
+P009_Operation_Assist,Preparation,231,Data Source/Sink Comments,8-5
+P009_Operation_Assist,Preparation,236,Data Source/Sink Comments,8-6
+P009_Operation_Assist,Preparation,241,Data Source/Sink Comments,9-1
+P009_Operation_Assist,Preparation,246,Data Source/Sink Comments,9-2
+P009_Operation_Assist,Preparation,251,Data Source/Sink Comments,9-3
+P009_Operation_Assist,Preparation,256,Data Source/Sink Comments,9-4
+P009_Operation_Assist,Preparation,261,Data Source/Sink Comments,9-5
+P009_Operation_Assist,Preparation,266,Data Source/Sink Comments,9-6
+P009_Operation_Assist,Preparation,271,Data Source/Sink Comments,A-1
+P009_Operation_Assist,Preparation,276,Data Source/Sink Comments,A-2
+P009_Operation_Assist,Preparation,281,Data Source/Sink Comments,A-3
+P009_Operation_Assist,Preparation,286,Data Source/Sink Comments,A-4
+P009_Operation_Assist,Preparation,291,Data Source/Sink Comments,A-5
+P009_Operation_Assist,Preparation,296,Data Source/Sink Comments,A-6
+P009_Operation_Assist,Preparation,301,Data Source/Sink Comments,B-1
+P009_Operation_Assist,Preparation,306,Data Source/Sink Comments,B-2
+P009_Operation_Assist,Preparation,311,Data Source/Sink Comments,B-3
+P009_Operation_Assist,Preparation,316,Data Source/Sink Comments,B-4
+P009_Operation_Assist,Preparation,321,Data Source/Sink Comments,B-5
+P009_Operation_Assist,Preparation,326,Data Source/Sink Comments,B-6
+P009_Operation_Assist,Preparation,331,Data Source/Sink Comments,C-1
+P009_Operation_Assist,Preparation,336,Data Source/Sink Comments,C-2
+P009_Operation_Assist,Preparation,341,Data Source/Sink Comments,C-3
+P009_Operation_Assist,Preparation,346,Data Source/Sink Comments,C-4
+P009_Operation_Assist,Preparation,351,Data Source/Sink Comments,C-5
+P009_Operation_Assist,Preparation,356,Data Source/Sink Comments,C-6
+P009_Operation_Assist,Preparation,361,Data Source/Sink Comments,D-1
+P009_Operation_Assist,Preparation,366,Data Source/Sink Comments,D-2
+P009_Operation_Assist,Preparation,371,Data Source/Sink Comments,D-3
+P009_Operation_Assist,Preparation,376,Data Source/Sink Comments,D-4
+P009_Operation_Assist,Preparation,381,Data Source/Sink Comments,D-5
+P009_Operation_Assist,Preparation,386,Data Source/Sink Comments,D-6
+P009_Operation_Assist,Preparation,391,Data Source/Sink Comments,E-1
+P009_Operation_Assist,Preparation,396,Data Source/Sink Comments,E-2
+P009_Operation_Assist,Preparation,401,Data Source/Sink Comments,E-3
+P009_Operation_Assist,Preparation,406,Data Source/Sink Comments,E-4
+P009_Operation_Assist,Preparation,411,Data Source/Sink Comments,E-5
+P009_Operation_Assist,Preparation,416,Data Source/Sink Comments,E-6
+P009_Operation_Assist,Preparation,421,Data Source/Sink Comments,F-1
+P009_Operation_Assist,Preparation,426,Data Source/Sink Comments,F-2
+P009_Operation_Assist,Preparation,431,Data Source/Sink Comments,F-3
+P009_Operation_Assist,Preparation,436,Data Source/Sink Comments,F-4
+P009_Operation_Assist,Preparation,441,Data Source/Sink Comments,F-5
+P009_Operation_Assist,Preparation,446,Data Source/Sink Comments,F-6
+P009_Operation_Assist,Preparation,451,Data Source/Sink Comments,G-1
+P009_Operation_Assist,Preparation,456,Data Source/Sink Comments,G-2
+P009_Operation_Assist,Preparation,461,Data Source/Sink Comments,G-3
+P009_Operation_Assist,Preparation,466,Data Source/Sink Comments,G-4
+P009_Operation_Assist,Preparation,471,Data Source/Sink Comments,G-5
+P009_Operation_Assist,Preparation,476,Data Source/Sink Comments,G-6
+P009_Operation_Assist,Preparation,481,Data Source/Sink Comments,■履歴
+P009_Operation_Assist,FB_Ope_Assi,1,Data Source/Sink Comments,1-1
+P009_Operation_Assist,FB_Ope_Assi,2,Data Source/Sink Comments,1-2
+P009_Operation_Assist,FB_Ope_Assi,3,Data Source/Sink Comments,1-3
+P009_Operation_Assist,FB_Ope_Assi,4,Data Source/Sink Comments,1-4
+P009_Operation_Assist,FB_Ope_Assi,5,Data Source/Sink Comments,1-5
+P009_Operation_Assist,FB_Ope_Assi,6,Data Source/Sink Comments,1-6
+P009_Operation_Assist,FB_Ope_Assi,7,Data Source/Sink Comments,2-1
+P009_Operation_Assist,FB_Ope_Assi,8,Data Source/Sink Comments,2-2
+P009_Operation_Assist,FB_Ope_Assi,9,Data Source/Sink Comments,2-3
+P009_Operation_Assist,FB_Ope_Assi,10,Data Source/Sink Comments,2-4
+P009_Operation_Assist,FB_Ope_Assi,11,Data Source/Sink Comments,2-5
+P009_Operation_Assist,FB_Ope_Assi,12,Data Source/Sink Comments,2-6
+P009_Operation_Assist,FB_Ope_Assi,13,Data Source/Sink Comments,3-1
+P009_Operation_Assist,FB_Ope_Assi,14,Data Source/Sink Comments,3-2
+P009_Operation_Assist,FB_Ope_Assi,15,Data Source/Sink Comments,3-3
+P009_Operation_Assist,FB_Ope_Assi,16,Data Source/Sink Comments,3-4
+P009_Operation_Assist,FB_Ope_Assi,17,Data Source/Sink Comments,3-5
+P009_Operation_Assist,FB_Ope_Assi,18,Data Source/Sink Comments,3-6
+P009_Operation_Assist,FB_Ope_Assi,19,Data Source/Sink Comments,4-1
+P009_Operation_Assist,FB_Ope_Assi,20,Data Source/Sink Comments,4-2
+P009_Operation_Assist,FB_Ope_Assi,21,Data Source/Sink Comments,4-3
+P009_Operation_Assist,FB_Ope_Assi,22,Data Source/Sink Comments,4-4
+P009_Operation_Assist,FB_Ope_Assi,23,Data Source/Sink Comments,4-5
+P009_Operation_Assist,FB_Ope_Assi,24,Data Source/Sink Comments,4-6
+P009_Operation_Assist,FB_Ope_Assi,25,Data Source/Sink Comments,5-1
+P009_Operation_Assist,FB_Ope_Assi,26,Data Source/Sink Comments,5-2
+P009_Operation_Assist,FB_Ope_Assi,27,Data Source/Sink Comments,5-3
+P009_Operation_Assist,FB_Ope_Assi,28,Data Source/Sink Comments,5-4
+P009_Operation_Assist,FB_Ope_Assi,29,Data Source/Sink Comments,5-5
+P009_Operation_Assist,FB_Ope_Assi,30,Data Source/Sink Comments,5-6
+P009_Operation_Assist,FB_Ope_Assi,31,Data Source/Sink Comments,6-1
+P009_Operation_Assist,FB_Ope_Assi,32,Data Source/Sink Comments,6-2
+P009_Operation_Assist,FB_Ope_Assi,33,Data Source/Sink Comments,6-3
+P009_Operation_Assist,FB_Ope_Assi,34,Data Source/Sink Comments,6-4
+P009_Operation_Assist,FB_Ope_Assi,35,Data Source/Sink Comments,6-5
+P009_Operation_Assist,FB_Ope_Assi,36,Data Source/Sink Comments,6-6
+P009_Operation_Assist,FB_Ope_Assi,37,Data Source/Sink Comments,7-1
+P009_Operation_Assist,FB_Ope_Assi,38,Data Source/Sink Comments,7-2
+P009_Operation_Assist,FB_Ope_Assi,39,Data Source/Sink Comments,7-3
+P009_Operation_Assist,FB_Ope_Assi,40,Data Source/Sink Comments,7-4
+P009_Operation_Assist,FB_Ope_Assi,41,Data Source/Sink Comments,7-5
+P009_Operation_Assist,FB_Ope_Assi,42,Data Source/Sink Comments,7-6
+P009_Operation_Assist,FB_Ope_Assi,43,Data Source/Sink Comments,8-1
+P009_Operation_Assist,FB_Ope_Assi,44,Data Source/Sink Comments,8-2
+P009_Operation_Assist,FB_Ope_Assi,45,Data Source/Sink Comments,8-3
+P009_Operation_Assist,FB_Ope_Assi,46,Data Source/Sink Comments,8-4
+P009_Operation_Assist,FB_Ope_Assi,47,Data Source/Sink Comments,8-5
+P009_Operation_Assist,FB_Ope_Assi,48,Data Source/Sink Comments,8-6
+P009_Operation_Assist,FB_Ope_Assi,49,Data Source/Sink Comments,9-1
+P009_Operation_Assist,FB_Ope_Assi,50,Data Source/Sink Comments,9-2
+P009_Operation_Assist,FB_Ope_Assi,51,Data Source/Sink Comments,9-3
+P009_Operation_Assist,FB_Ope_Assi,52,Data Source/Sink Comments,9-4
+P009_Operation_Assist,FB_Ope_Assi,53,Data Source/Sink Comments,9-5
+P009_Operation_Assist,FB_Ope_Assi,54,Data Source/Sink Comments,9-6
+P009_Operation_Assist,FB_Ope_Assi,55,Data Source/Sink Comments,A-1
+P009_Operation_Assist,FB_Ope_Assi,56,Data Source/Sink Comments,A-2
+P009_Operation_Assist,FB_Ope_Assi,57,Data Source/Sink Comments,A-3
+P009_Operation_Assist,FB_Ope_Assi,58,Data Source/Sink Comments,A-4
+P009_Operation_Assist,FB_Ope_Assi,59,Data Source/Sink Comments,A-5
+P009_Operation_Assist,FB_Ope_Assi,60,Data Source/Sink Comments,A-6
+P009_Operation_Assist,FB_Ope_Assi,61,Data Source/Sink Comments,B-1
+P009_Operation_Assist,FB_Ope_Assi,62,Data Source/Sink Comments,B-2
+P009_Operation_Assist,FB_Ope_Assi,63,Data Source/Sink Comments,B-3
+P009_Operation_Assist,FB_Ope_Assi,64,Data Source/Sink Comments,B-4
+P009_Operation_Assist,FB_Ope_Assi,65,Data Source/Sink Comments,B-5
+P009_Operation_Assist,FB_Ope_Assi,66,Data Source/Sink Comments,B-6
+P009_Operation_Assist,FB_Ope_Assi,67,Data Source/Sink Comments,C-1
+P009_Operation_Assist,FB_Ope_Assi,68,Data Source/Sink Comments,C-2
+P009_Operation_Assist,FB_Ope_Assi,69,Data Source/Sink Comments,C-3
+P009_Operation_Assist,FB_Ope_Assi,70,Data Source/Sink Comments,C-4
+P009_Operation_Assist,FB_Ope_Assi,71,Data Source/Sink Comments,C-5
+P009_Operation_Assist,FB_Ope_Assi,72,Data Source/Sink Comments,C-6
+P009_Operation_Assist,FB_Ope_Assi,73,Data Source/Sink Comments,D-1
+P009_Operation_Assist,FB_Ope_Assi,74,Data Source/Sink Comments,D-2
+P009_Operation_Assist,FB_Ope_Assi,75,Data Source/Sink Comments,D-3
+P009_Operation_Assist,FB_Ope_Assi,76,Data Source/Sink Comments,D-4
+P009_Operation_Assist,FB_Ope_Assi,77,Data Source/Sink Comments,D-5
+P009_Operation_Assist,FB_Ope_Assi,78,Data Source/Sink Comments,D-6
+P009_Operation_Assist,FB_Ope_Assi,79,Data Source/Sink Comments,E-1
+P009_Operation_Assist,FB_Ope_Assi,80,Data Source/Sink Comments,E-2
+P009_Operation_Assist,FB_Ope_Assi,81,Data Source/Sink Comments,E-3
+P009_Operation_Assist,FB_Ope_Assi,82,Data Source/Sink Comments,E-4
+P009_Operation_Assist,FB_Ope_Assi,83,Data Source/Sink Comments,E-5
+P009_Operation_Assist,FB_Ope_Assi,84,Data Source/Sink Comments,E-6
+P009_Operation_Assist,FB_Ope_Assi,85,Data Source/Sink Comments,F-1
+P009_Operation_Assist,FB_Ope_Assi,86,Data Source/Sink Comments,F-2
+P009_Operation_Assist,FB_Ope_Assi,87,Data Source/Sink Comments,F-3
+P009_Operation_Assist,FB_Ope_Assi,88,Data Source/Sink Comments,F-4
+P009_Operation_Assist,FB_Ope_Assi,89,Data Source/Sink Comments,F-5
+P009_Operation_Assist,FB_Ope_Assi,90,Data Source/Sink Comments,F-6
+P009_Operation_Assist,FB_Ope_Assi,91,Data Source/Sink Comments,G-1
+P009_Operation_Assist,FB_Ope_Assi,92,Data Source/Sink Comments,G-2
+P009_Operation_Assist,FB_Ope_Assi,93,Data Source/Sink Comments,G-3
+P009_Operation_Assist,FB_Ope_Assi,94,Data Source/Sink Comments,G-4
+P009_Operation_Assist,FB_Ope_Assi,95,Data Source/Sink Comments,G-5
+P009_Operation_Assist,FB_Ope_Assi,96,Data Source/Sink Comments,G-6
+P009_Operation_Assist,FB_Motion_Time,1,Data Source/Sink Comments,動作時間
+P100_Main1,DeviceIn,1,Data Source/Sink Comments,■機器の実ｱﾄﾞﾚｽを名称固定ｸﾞﾛｰﾊﾞﾙ変数に置換え =REPLACE DEVICE ADDRESS WITH FIXED GLOBAL VARIABLES
+P100_Main1,DeviceIn,9,Data Source/Sink Comments,■安全PLCより =FROM SAFETY PLC
+P100_Main1,Fault,1,Data Source/Sink Comments,"■異常解除 =FAULT RESET
+        P100_Main1内で発生した異常をリセットする"
+P100_Main1,Fault,2,Data Source/Sink Comments,"■設備全体に関わる異常処理を行う =FAULT OF WHOLE MACHINE 
+■緊急停止異常 =EMERGENCY STOP"
+P100_Main1,Fault,8,Data Source/Sink Comments,■ｻｲｸﾙ停止異常 =CYCLE STOP
+P100_Main1,Fault,9,Data Source/Sink Comments,"■異常停止 =FAULT STOP
+※※異常の条件は都度設計してください。
+※※適切なタイマ値に設定してください。"
+P100_Main1,Fault,10,Data Source/Sink Comments,■予告警報 =WARNING
+P100_Main1,Fault,12,Data Source/Sink Comments,■緊急停止まとめ =EMERGENCY STOP TOTAL
+P100_Main1,Fault,24,Data Source/Sink Comments,■自動停止まとめ =AUTO STOP TOTAL
+P100_Main1,Fault,34,Data Source/Sink Comments,■ｻｲｸﾙ停止まとめ =CYCLE STOP TOTAL
+P100_Main1,Fault,47,Data Source/Sink Comments,■異常停止まとめ =FAULT STOP TOTAL
+P100_Main1,Fault,57,Data Source/Sink Comments,■予告警報まとめ =WARNING TOTAL
+P100_Main1,Fault,69,Data Source/Sink Comments,■独立制御機器緊急停止まとめ =INDEPENDENT DEVICE EMERGENCY TOTAL
+P100_Main1,Fault,74,Data Source/Sink Comments,■ﾌﾞｻﾞｰ =BUZZER
+P100_Main1,Fault,80,Data Source/Sink Comments,■ｼｸﾞﾅﾙﾀﾜｰ =SIGNAL TOWER
+P100_Main1,MasterPreparUnit,1,Data Source/Sink Comments,"■省ｴﾈ運転 ZDB
+　　省ｴﾈ開始 自工程条件"
+P100_Main1,Condition,1,Data Source/Sink Comments,"■設備全体の状態(原位置・起動条件・運転中でない)まとめ =MACHINE STATUS 
+■全原位置 =ALL HOME POSITION"
+P100_Main1,AutoMain,1,Data Source/Sink Comments,■自動運転起動･停止 =AUTO START
+P100_Main1,AutoMain,5,Data Source/Sink Comments,Machine stop  ■運転中でない
+P100_Main1,AutoMain,10,Data Source/Sink Comments,■設備停止 =MACHINE STOP
+P100_Main1,AutoMain,11,Data Source/Sink Comments,"■Discharge
+        -メイン搬送を司るﾌﾟﾛｸﾞﾗﾑの停止中信号とを割付"
+P100_Main1,AutoMain,12,Data Source/Sink Comments,"-排出運転のステップに条件を割付け；使用しないステップは常時ONを割付け
+        -各工程のワーク無し（センサ・記憶）を割付"
+P100_Main1,HMI_Out,1,Data Source/Sink Comments,"■運転準備条件(HMI） =MASTER READY CONDITION
+        - 未使用の場合 常時ON =IN CASE OF NOT IN USE, ALWAYS ON"
+P100_Main1,HMI_Out,3,Data Source/Sink Comments,"_EC_PDActive:  ﾌﾟﾛｾｽﾃﾞｰﾀ通信ｽﾃｰﾀｽ =PROCESS DATA COMMUNICATION STATUS
+　　　ONで通信正常。EtherCAT機器未使用時はOFFのため_EC_PDActive信号をすべて削除してください 
+　　　ON is communication normal. If not in use EtherCAT device, delete _EC_PDActive due to turn it off."
+P100_Main1,HMI_Out,17,Data Source/Sink Comments,■機器立上げ =DEVICE SETUP
+P100_Main1,HMI_Out,65,Data Source/Sink Comments,"■自動起動条件 =AUTO START CONDITION
+        - 未使用の場合 常時ON =IN CASE OF NOT IN USE, ALWAYS ON"
+P100_Main1,HMI_Out,98,Data Source/Sink Comments,■自動運転 特殊運転 =AUTO RUN SPECIAL OPERATION
+P100_Main1,HMI_Out,108,Data Source/Sink Comments,■補助操作 =AUXILIARY OPERATION
+P100_Main1,HMI_Out,156,Data Source/Sink Comments,■ﾒﾝﾃﾅﾝｽ操作 =MAINTENANCE OPERATION
+P100_Main1,HMI_Out,212,Data Source/Sink Comments,■異常MAP
+P100_Main1,DeviceOut,1,Data Source/Sink Comments,"■ﾊﾞﾙﾌﾞ、機器、ｼｸﾞﾅﾙﾀﾜｰなどの出力回路 = DEVICE OUTPUT
+        -Operation panel"
+P100_Main1,DeviceOut,6,Data Source/Sink Comments,-Signal tower
+P100_Main1,DeviceOut,9,Data Source/Sink Comments,-安全PLCへ = SAFETY PLC
+P100_Main1,MainOut,1,Data Source/Sink Comments,■Main1が統括する各MDへ信号出力 =MODULE OUTPUT
+P100_Main1,MainOut,9,Data Source/Sink Comments,■省ｴﾈ運転 ZDB
+P100_Main1,MainOut,11,Data Source/Sink Comments,■設備ステータス代入
+P101_HMI,MD_In,1,Data Source/Sink Comments,"■流動品番表示 = DISPLAY P/N
+        - STRING#'' をHMI表示する品番に置換え  =CHANGE STRING#'' TO P/N EACH MACHINE HAS"
+P101_HMI,MD_In,2,Data Source/Sink Comments,"■設備用ｶｳﾝﾀ ｶｳﾝﾄﾀｲﾐﾝｸﾞ
+※ｶｳﾝﾄﾀｲﾐﾝｸﾞはHMIのﾀｽｸと同等の周期信号を使用すること =COUNT TIMING BIT SHOULD BE SAME AS HMI TASK SCAN"
+P101_HMI,MD_In,32,Data Source/Sink Comments,"サイクルタイム =CYCLE TIME
+※ｶｳﾝﾄﾀｲﾐﾝｸﾞはHMIのﾀｽｸと同等の周期信号を使用すること =COUNT TIMING BIT SHOULD BE SAME AS HMI TASK SCAN"
+P101_HMI,MD_In,33,Data Source/Sink Comments,■ﾀｲﾏ 計測ﾀｲﾐﾝｸﾞ
+P101_HMI,MD_In,39,Data Source/Sink Comments,■段取ﾃﾞｰﾀ・ｶｳﾝﾀ・ﾀｲﾏ
+P101_HMI,MD_In,44,Data Source/Sink Comments,"■ZAW 品番別生産ｶｳﾝﾀ　ｶｳﾝﾄﾀｲﾐﾝｸﾞ
+※ｶｳﾝﾄﾀｲﾐﾝｸﾞはHMIのﾀｽｸと同等の周期信号を使用すること =COUNT TIMING BIT SHOULD BE SAME AS HMI TASK SCAN"
+P101_HMI,TP_Control,1,Data Source/Sink Comments,■画面切換え SCREEN CHANGE
+P101_HMI,SetUp_Data,1,Data Source/Sink Comments,初期設定 最大登録品番数=1000 =SETUP DATA INITIAL SETTING. MAXIMUM = 100
+P101_HMI,SetUp_Data,2,Data Source/Sink Comments,段取りデータ入力画面切替り時検索結果リセット =RESET THE RESULT WHEN THE SCREEN CHANGE
+P101_HMI,SetUp_Data,3,Data Source/Sink Comments,"段取りデータ編集許可 =EDIT SETUP DATA 
+        - LD011   0:未検索 / 1:抽出完了 / 2:未登録 / 3:検索中 =0:NOT SEARCHING / 1:SEARCH COMPLETE / 2:NOT REGISTERED / 3:SERCHING"
+P101_HMI,SetUp_Data,6,Data Source/Sink Comments,段取りデータ削除許可 DELETE SETUP DATA
+P101_HMI,SetUp_Data,9,Data Source/Sink Comments,抽出Assy品番変更時検索結果リセット =RESET THE RESULT WHEN P/N CHANGE
+P101_HMI,SetUp_Data,10,Data Source/Sink Comments,Assy品番検索 =ASSY P/N SERCHING
+P101_HMI,SetUp_Data,14,Data Source/Sink Comments,Assy品番 未登録先頭検索 =ASSY P/N NOT-REGISTERED TOP SEARCH
+P101_HMI,SetUp_Data,35,Data Source/Sink Comments,段取りデータ編集後書込み実行 =WRITE SETUP DATA AFTER EDITED
+P101_HMI,SetUp_Data,36,Data Source/Sink Comments,段取データ書込み(編集登録) 段取りデータのみ =WRITE SETUP DATA(EDIT REGISTERED)
+P101_HMI,SetUp_Data,37,Data Source/Sink Comments,段取データ書込み(新規登録)=WRITE SETUP DATA(NEW REGISTERED)
+P101_HMI,SetUp_Data,38,Data Source/Sink Comments,段取りデータ削除書込み実行 =DELETE SETUP DATA
+P101_HMI,SetUp_Data,42,Data Source/Sink Comments,段取りデータ確定PL =SETUP DATA SET PL
+P101_HMI,SetUp_Data,44,Data Source/Sink Comments,段取りデータ番号+/-
+P101_HMI,SetUp_Data,47,Data Source/Sink Comments,段取上下限データ書込み =SETUP UPPER/LOWER DATA WRITE
+P101_HMI,SetUp_Data,108,Data Source/Sink Comments,段取り上下限番号+/-
+P101_HMI,SetUp_Data,110,Data Source/Sink Comments,段取上下限データ読出し =READ SETUP UPPER/LOWER DATA
+P101_HMI,Counters,1,Data Source/Sink Comments,カウンタ設定値書込み  =WRITE COUNTER VALUE
+P101_HMI,Counters,2,Data Source/Sink Comments,カウンタ番号+/-
+P101_HMI,Counters,4,Data Source/Sink Comments,カウンタ設定値読出し =READ COUNTER VALUE
+P101_HMI,Counters,6,Data Source/Sink Comments,ｶｳﾝﾀ1回路 =COUNTER 1
+P101_HMI,Counters,10,Data Source/Sink Comments,ｶｳﾝﾀ2回路 =COUNTER 2
+P101_HMI,Counters,14,Data Source/Sink Comments,ｶｳﾝﾀ3回路 =COUNTER 3
+P101_HMI,Counters,18,Data Source/Sink Comments,ｶｳﾝﾀ4回路 =COUNTER 4
+P101_HMI,Counters,22,Data Source/Sink Comments,ｶｳﾝﾀ5回路 =COUNTER 5
+P101_HMI,Counters,26,Data Source/Sink Comments,ｶｳﾝﾀ6回路 =COUNTER 6
+P101_HMI,Counters,30,Data Source/Sink Comments,ｶｳﾝﾀ7回路 =COUNTER 7
+P101_HMI,Counters,34,Data Source/Sink Comments,ｶｳﾝﾀ8回路 =COUNTER 8
+P101_HMI,Counters,38,Data Source/Sink Comments,ｶｳﾝﾀ9回路 =COUNTER 9
+P101_HMI,Counters,42,Data Source/Sink Comments,ｶｳﾝﾀ10回路 =COUNTER 10
+P101_HMI,Counters,46,Data Source/Sink Comments,ｶｳﾝﾀ11回路 =COUNTER 11
+P101_HMI,Counters,50,Data Source/Sink Comments,ｶｳﾝﾀ12回路 =COUNTER 12
+P101_HMI,Counters,54,Data Source/Sink Comments,ｶｳﾝﾀ13回路 =COUNTER 13
+P101_HMI,Counters,58,Data Source/Sink Comments,ｶｳﾝﾀ14回路 =COUNTER 14
+P101_HMI,Counters,62,Data Source/Sink Comments,ｶｳﾝﾀ15回路 =COUNTER 15
+P101_HMI,Counters,66,Data Source/Sink Comments,ｶｳﾝﾀ16回路 =COUNTER 16
+P101_HMI,Counters,70,Data Source/Sink Comments,ｶｳﾝﾀ17回路 =COUNTER 17
+P101_HMI,Counters,74,Data Source/Sink Comments,ｶｳﾝﾀ18回路 =COUNTER 18
+P101_HMI,Counters,78,Data Source/Sink Comments,ｶｳﾝﾀ19回路 =COUNTER 19
+P101_HMI,Counters,82,Data Source/Sink Comments,ｶｳﾝﾀ20回路 =COUNTER 20
+P101_HMI,Counters,86,Data Source/Sink Comments,ｶｳﾝﾀ21回路 =COUNTER 21
+P101_HMI,Counters,90,Data Source/Sink Comments,ｶｳﾝﾀ22回路 =COUNTER 22
+P101_HMI,Counters,94,Data Source/Sink Comments,ｶｳﾝﾀ23回路 =COUNTER 23
+P101_HMI,Counters,98,Data Source/Sink Comments,ｶｳﾝﾀ24回路 =COUNTER 24
+P101_HMI,Counters,102,Data Source/Sink Comments,ｶｳﾝﾀ25回路 =COUNTER 25
+P101_HMI,Counters,106,Data Source/Sink Comments,ｶｳﾝﾀ26回路 =COUNTER 26
+P101_HMI,Counters,110,Data Source/Sink Comments,ｶｳﾝﾀ27回路 =COUNTER 27
+P101_HMI,Counters,114,Data Source/Sink Comments,ｶｳﾝﾀ28回路 =COUNTER2 8
+P101_HMI,Counters,118,Data Source/Sink Comments,ｶｳﾝﾀ29回路 =COUNTER 29
+P101_HMI,Counters,122,Data Source/Sink Comments,ｶｳﾝﾀ30回路 =COUNTER 30
+P101_HMI,Counters,126,Data Source/Sink Comments,■ZAW 品番別生産ｶｳﾝﾀ
+P101_HMI,Timers,1,Data Source/Sink Comments,ｻｲｸﾙﾀｲﾑ計測 = CYCLE TIME
+P101_HMI,Timers,2,Data Source/Sink Comments,演算ﾀｲﾐﾝｸﾞ
+P101_HMI,Timers,3,Data Source/Sink Comments,タイマ設定値書込み = WRITE TIMER VALUE
+P101_HMI,Timers,4,Data Source/Sink Comments,タイマ番号+/-
+P101_HMI,Timers,6,Data Source/Sink Comments,タイマ設定値読出し = REAS TIMER VALUE
+P101_HMI,Timers,8,Data Source/Sink Comments,タイマ1回路 =TIMER1
+P101_HMI,Timers,10,Data Source/Sink Comments,タイマ2回路 =TIMER2
+P101_HMI,Timers,12,Data Source/Sink Comments,タイマ3回路 =TIMER3
+P101_HMI,Timers,14,Data Source/Sink Comments,タイマ4回路 =TIMER4
+P101_HMI,Timers,16,Data Source/Sink Comments,タイマ5回路 =TIMER5
+P101_HMI,Timers,18,Data Source/Sink Comments,タイマ6回路 =TIMER6
+P101_HMI,MDAsset_ZFB,1,Data Source/Sink Comments,"入力桁数確認 
+CONFIRM INPUT DATA DIGITS"
+P101_HMI,MDAsset_ZFB,3,Data Source/Sink Comments,"選択行更新
+SELECTED ROW UPDATE"
+P101_HMI,MDAsset_ZFB,5,Data Source/Sink Comments,"行追加
+ADD ROW"
+P101_HMI,MDAsset_ZFB,7,Data Source/Sink Comments,"選択行初期化
+SELECTED ROW INITIALIZE"
+P101_HMI,MDAsset_ZFB,8,Data Source/Sink Comments,"選択行削除
+SELECTED ROW DELETE"
+P101_HMI,MDAsset_ZFB,10,Data Source/Sink Comments,"IOT仕様に合わせてMD識別記号と連番を分離
+DIVIDE MD ID AND SN FOR IOT SPEC"
+P101_HMI,MDAsset_ZFB,12,Data Source/Sink Comments,"設備機番出力
+MACHINE NO OUTPUT"
+P101_HMI,MDAsset_ZFB,13,Data Source/Sink Comments,"IOT転送インデックス初期値設定
+ITO TRANSFER INDEX INITIAL SETTING"
+P101_HMI,MDAsset_ZFB,14,Data Source/Sink Comments,"V2ｻｰﾊﾞへﾃﾞｰﾀ送信許可 データクリア
+DATA CLEAR"
+P101_HMI,MDAsset_ZFB,15,Data Source/Sink Comments,"■ALL_MD_IOTへ出力
+■OUTPUT TO ALL_MD_IOT"
+P101_HMI,MDAsset_ZFB,16,Data Source/Sink Comments,"MD識別記号、シリアルNO出力
+MD IDENTIFICATION CODE, SERIAL NO OUTPUT"
+P101_HMI,MDAsset_ZFB,17,Data Source/Sink Comments,"動作時間、動作回数出力
+MOTION TIME, MOTION COUNT OUTPUT"
+P101_HMI,MDAsset_ZFB,18,Data Source/Sink Comments,"アラーム出力
+ALARM OUTPUT"
+P101_HMI,MDAsset_ZFB,19,Data Source/Sink Comments,登録しているＭＤの異常がONしているかﾁｪｯｸ　CHECK REGISTERD MD FAULT BIT ON
+P101_HMI,MDAsset_ZFB,21,Data Source/Sink Comments,"MD転送アドレス インデックス加算(1MD  30WORD)
+ADD MD TRANSFER ADDRESS INDEX"
+P101_HMI,MDAsset_ZFB,23,Data Source/Sink Comments,V2ｻｰﾊﾞへﾃﾞｰﾀ送信許可信号　PERMIT TO SEND DATA TO V2 SERVER
+P101_HMI,HMI_Out,1,Data Source/Sink Comments,■ｸﾞﾛｰﾊﾞﾙ変数をHMI変数へ置換え =REPLACE GLOBAL VARIABLES WITH HMI VARIABLES
+P101_HMI,HMI_Out,20,Data Source/Sink Comments,■ZAW 品番別生産ｶｳﾝﾀ
+P101_HMI,MD_Out,1,Data Source/Sink Comments,■MD_OUTPUT
+P121_sample40_41,MD_In,1,Data Source/Sink Comments,"■Main, 他機能MDからの信号
+=FROM Main AND OTHER FUNCTION MD"
+P121_sample40_41,DeviceIn,1,Data Source/Sink Comments,"■ｾﾝｻのﾀｲﾏ、LS合成等の入力信号処理回路
+= TIMER OF SENSOR, LS COMPOSITION
+        -LS COMPOSITION"
+P121_sample40_41,DeviceIn,2,Data Source/Sink Comments,"==RB1_In==
+※RC8の入力グローバル変数を構造体にまとめFBへ
+※Create structure of RC8 input global variable and input ZAC FB"
+P121_sample40_41,DeviceIn,15,Data Source/Sink Comments,"==RB入力信号を共用体変数へビット展開==
+==Bit expansion of RB input signal to union variable=="
+P121_sample40_41,Fault,1,Data Source/Sink Comments,"■機能MD内の異常処理を行う =FAULT OUTPUT IN THE FUNCTION MD
+■異常ﾘｾｯﾄ =FAULT RESET"
+P121_sample40_41,Fault,2,Data Source/Sink Comments,■緊急停止 =EMERGENCY STOP
+P121_sample40_41,Fault,4,Data Source/Sink Comments,■自動停止 =AUTOMATIC STOP
+P121_sample40_41,Fault,5,Data Source/Sink Comments,■ｻｲｸﾙ停止 =CYCLE STOP
+P121_sample40_41,Fault,9,Data Source/Sink Comments,■異常停止 =FAULT STOP
+P121_sample40_41,Fault,10,Data Source/Sink Comments,■予告警報 =WARNING
+P121_sample40_41,Fault,11,Data Source/Sink Comments,■動作異常 =MOTION FAULT
+P121_sample40_41,Fault,12,Data Source/Sink Comments,■独立制御機器緊急停止 =INDEPENDENT DEVICE EMERGENCY STOP
+P121_sample40_41,Fault,13,Data Source/Sink Comments,■独立制御機器警報 =INDEPENDENT DEVICE WARNING
+P121_sample40_41,Fault,14,Data Source/Sink Comments,■緊急停止まとめ =EMERGENCY STOP TOTAL
+P121_sample40_41,Fault,18,Data Source/Sink Comments,■自動停止まとめ =AUTOMATIC STOP TOTAL
+P121_sample40_41,Fault,19,Data Source/Sink Comments,■ｻｲｸﾙ停止まとめ =CYCLE STOP TOTAL
+P121_sample40_41,Fault,25,Data Source/Sink Comments,■異常停止まとめ =FAULT STOP TOTAL
+P121_sample40_41,Fault,28,Data Source/Sink Comments,■予告警報まとめ =WARNING TOTAL
+P121_sample40_41,Preparation,1,Data Source/Sink Comments,■機能MD内でのみ使用する機器の準備回路
+P121_sample40_41,Preparation,2,Data Source/Sink Comments,"■機能MD内でのみ使用する機器の準備回路
+PREPARATION CIRCUITS FOR EQUIPMENT USED ONLY WITHIN FUNCTIONAL MD
+
+ﾛﾎﾞｯﾄ準備入り、定位置戻し
+Robot Ready & Fixed Pos. Return"
+P121_sample40_41,Preparation,4,Data Source/Sink Comments,"ISP切替
+ISP Switching"
+P121_sample40_41,Preparation,5,Data Source/Sink Comments,"作業者未介入
+No Operator Intervention"
+P121_sample40_41,Preparation,8,Data Source/Sink Comments,ﾏｽﾀﾁｪｯｸ動作回路
+P121_sample40_41,Preparation,13,Data Source/Sink Comments,■独立制御機器制御停止指令回路
+P121_sample40_41,Condition,1,Data Source/Sink Comments,"■原位置
+=Home position"
+P121_sample40_41,Condition,2,Data Source/Sink Comments,"■起動条件
+=Start condition"
+P121_sample40_41,Individual,1,Data Source/Sink Comments,"■機能MDの各個運転回路
+=IND 1 cycle"
+P121_sample40_41,Individual,4,Data Source/Sink Comments,■IND
+P121_sample40_41,Individual,6,Data Source/Sink Comments,=各個1-1-1
+P121_sample40_41,Individual,12,Data Source/Sink Comments,=各個1-1-2
+P121_sample40_41,Individual,18,Data Source/Sink Comments,=各個1-1-3
+P121_sample40_41,Individual,24,Data Source/Sink Comments,=各個1-1-4
+P121_sample40_41,Individual,30,Data Source/Sink Comments,=各個1-1-5
+P121_sample40_41,Individual,36,Data Source/Sink Comments,=各個1-1-6
+P121_sample40_41,Individual,42,Data Source/Sink Comments,=各個1-1-7
+P121_sample40_41,Individual,48,Data Source/Sink Comments,=各個1-1-8
+P121_sample40_41,Individual,54,Data Source/Sink Comments,=各個1-2-1
+P121_sample40_41,Individual,60,Data Source/Sink Comments,=各個1-2-2
+P121_sample40_41,Individual,66,Data Source/Sink Comments,=各個1-2-3
+P121_sample40_41,Individual,72,Data Source/Sink Comments,=各個1-2-4
+P121_sample40_41,Individual,78,Data Source/Sink Comments,=各個1-2-5
+P121_sample40_41,Individual,84,Data Source/Sink Comments,=各個1-2-6
+P121_sample40_41,Individual,90,Data Source/Sink Comments,=各個1-2-7
+P121_sample40_41,Individual,96,Data Source/Sink Comments,=各個1-2-8
+P121_sample40_41,AutoRun,1,Data Source/Sink Comments,"■機能MDの自動運転回路
+=Auto run"
+P121_sample40_41,AutoRun,3,Data Source/Sink Comments,◆転送ﾃﾞｰﾀ送信
+P121_sample40_41,AutoRun,8,Data Source/Sink Comments,補正値演算
+P121_sample40_41,AutoRun,16,Data Source/Sink Comments,◆ﾜｰｸ取出動作
+P121_sample40_41,AutoRun,24,Data Source/Sink Comments,◆ﾜｰｸ投入動作
+P121_sample40_41,AutoRun,32,Data Source/Sink Comments,◆動作終了
+P121_sample40_41,AutoRun,35,Data Source/Sink Comments,■FB_IN Robot Controler
+P121_sample40_41,AutoRun,40,Data Source/Sink Comments,"■マスタ運転等ロボット特殊運転があればここに条件追加する
+■If has a robot special operation such as master operation, add here."
+P121_sample40_41,AutoRun,45,Data Source/Sink Comments,
+P121_sample40_41,MemoryFeeding,1,Data Source/Sink Comments,■記憶送り回路 =Memoryfeeding
+P121_sample40_41,MemoryFeeding,3,Data Source/Sink Comments,
+P121_sample40_41,MemoryFeeding,5,Data Source/Sink Comments,
+P121_sample40_41,MemoryFeeding,7,Data Source/Sink Comments,■RB記憶送り回路 =Robot Memory Feeding
+P121_sample40_41,MemoryFeeding,13,Data Source/Sink Comments,◆ﾏｽﾀﾁｪｯｸ記憶
+P121_sample40_41,HMI_Out,1,Data Source/Sink Comments,"■HMI_Out
+HMI_Deviceのﾛｰｶﾙ変数をHMI変数へ置換"
+P121_sample40_41,DeviceOut,1,Data Source/Sink Comments,"■RB1出力(標準エリア)　FBより(PORT512～547)
+■RB1Output(Standard area) from FB(PORT512～547)"
+P121_sample40_41,DeviceOut,9,Data Source/Sink Comments,"■RB1出力(カスタムエリア)　設備毎都度設計(PORT552-767)
+■RB1 output (custom area) Designed for each MC PORT552 to 767)"
+P121_sample40_41,MD_Out,1,Data Source/Sink Comments,"■P/Fへの出力 =OUTPUT TO  P/F
+■FUNCTION MD -> P/F"
+P131_sampleOK,MD_In,1,Data Source/Sink Comments,"■Main, 他機能MDからの信号
+=FROM Main AND OTHER FUNCTION MD"
+P131_sampleOK,DeviceIn,1,Data Source/Sink Comments,"■ｾﾝｻのﾀｲﾏ、LS合成等の入力信号処理回路
+= TIMER OF SENSOR, LS COMPOSITION
+        -LS COMPOSITION"
+P131_sampleOK,DeviceIn,2,Data Source/Sink Comments,"==RB1_In==
+※RC8の入力グローバル変数を構造体にまとめFBへ
+※Create structure of RC8 input global variable and input ZAC FB"
+P131_sampleOK,DeviceIn,15,Data Source/Sink Comments,"==RB入力信号を共用体変数へビット展開==
+==Bit expansion of RB input signal to union variable=="
+P131_sampleOK,Fault,1,Data Source/Sink Comments,"■機能MD内の異常処理を行う =FAULT OUTPUT IN THE FUNCTION MD
+■異常ﾘｾｯﾄ =FAULT RESET"
+P131_sampleOK,Fault,2,Data Source/Sink Comments,■緊急停止 =EMERGENCY STOP
+P131_sampleOK,Fault,4,Data Source/Sink Comments,■自動停止 =AUTOMATIC STOP
+P131_sampleOK,Fault,5,Data Source/Sink Comments,■ｻｲｸﾙ停止 =CYCLE STOP
+P131_sampleOK,Fault,9,Data Source/Sink Comments,■異常停止 =FAULT STOP
+P131_sampleOK,Fault,10,Data Source/Sink Comments,■予告警報 =WARNING
+P131_sampleOK,Fault,11,Data Source/Sink Comments,■動作異常 =MOTION FAULT
+P131_sampleOK,Fault,12,Data Source/Sink Comments,■独立制御機器緊急停止 =INDEPENDENT DEVICE EMERGENCY STOP
+P131_sampleOK,Fault,13,Data Source/Sink Comments,■独立制御機器警報 =INDEPENDENT DEVICE WARNING
+P131_sampleOK,Fault,14,Data Source/Sink Comments,■緊急停止まとめ =EMERGENCY STOP TOTAL
+P131_sampleOK,Fault,18,Data Source/Sink Comments,■自動停止まとめ =AUTOMATIC STOP TOTAL
+P131_sampleOK,Fault,19,Data Source/Sink Comments,■ｻｲｸﾙ停止まとめ =CYCLE STOP TOTAL
+P131_sampleOK,Fault,25,Data Source/Sink Comments,■異常停止まとめ =FAULT STOP TOTAL
+P131_sampleOK,Fault,28,Data Source/Sink Comments,■予告警報まとめ =WARNING TOTAL
+P131_sampleOK,Preparation,1,Data Source/Sink Comments,■機能MD内でのみ使用する機器の準備回路
+P131_sampleOK,Preparation,2,Data Source/Sink Comments,"■機能MD内でのみ使用する機器の準備回路
+PREPARATION CIRCUITS FOR EQUIPMENT USED ONLY WITHIN FUNCTIONAL MD
+
+ﾛﾎﾞｯﾄ準備入り、定位置戻し
+Robot Ready & Fixed Pos. Return"
+P131_sampleOK,Preparation,4,Data Source/Sink Comments,"ISP切替
+ISP Switching"
+P131_sampleOK,Preparation,5,Data Source/Sink Comments,"作業者未介入
+No Operator Intervention"
+P131_sampleOK,Preparation,8,Data Source/Sink Comments,ﾏｽﾀﾁｪｯｸ動作回路
+P131_sampleOK,Preparation,13,Data Source/Sink Comments,■独立制御機器制御停止指令回路
+P131_sampleOK,Condition,1,Data Source/Sink Comments,"■原位置
+=Home position"
+P131_sampleOK,Condition,2,Data Source/Sink Comments,"■起動条件
+=Start condition"
+P131_sampleOK,Individual,1,Data Source/Sink Comments,"■機能MDの各個運転回路
+=IND 1 cycle"
+P131_sampleOK,Individual,4,Data Source/Sink Comments,■IND
+P131_sampleOK,Individual,6,Data Source/Sink Comments,=各個1-1-1
+P131_sampleOK,Individual,12,Data Source/Sink Comments,=各個1-1-2
+P131_sampleOK,Individual,18,Data Source/Sink Comments,=各個1-1-3
+P131_sampleOK,Individual,24,Data Source/Sink Comments,=各個1-1-4
+P131_sampleOK,Individual,30,Data Source/Sink Comments,=各個1-1-5
+P131_sampleOK,Individual,36,Data Source/Sink Comments,=各個1-1-6
+P131_sampleOK,Individual,42,Data Source/Sink Comments,=各個1-1-7
+P131_sampleOK,Individual,48,Data Source/Sink Comments,=各個1-1-8
+P131_sampleOK,Individual,54,Data Source/Sink Comments,=各個1-2-1
+P131_sampleOK,Individual,60,Data Source/Sink Comments,=各個1-2-2
+P131_sampleOK,Individual,66,Data Source/Sink Comments,=各個1-2-3
+P131_sampleOK,Individual,72,Data Source/Sink Comments,=各個1-2-4
+P131_sampleOK,Individual,78,Data Source/Sink Comments,=各個1-2-5
+P131_sampleOK,Individual,84,Data Source/Sink Comments,=各個1-2-6
+P131_sampleOK,Individual,90,Data Source/Sink Comments,=各個1-2-7
+P131_sampleOK,Individual,96,Data Source/Sink Comments,=各個1-2-8
+P131_sampleOK,AutoRun,1,Data Source/Sink Comments,"■機能MDの自動運転回路
+=Auto run"
+P131_sampleOK,AutoRun,3,Data Source/Sink Comments,◆転送ﾃﾞｰﾀ送信
+P131_sampleOK,AutoRun,8,Data Source/Sink Comments,補正値演算
+P131_sampleOK,AutoRun,13,Data Source/Sink Comments,"SQRT,LN,LOG,EXP,EXPT,Inc,Dec,RadToDeg,DegToRad"
+P131_sampleOK,AutoRun,18,Data Source/Sink Comments,◆ﾜｰｸ取出動作
+P131_sampleOK,AutoRun,26,Data Source/Sink Comments,◆ﾜｰｸ投入動作
+P131_sampleOK,AutoRun,34,Data Source/Sink Comments,◆動作終了
+P131_sampleOK,AutoRun,37,Data Source/Sink Comments,■FB_IN Robot Controler
+P131_sampleOK,AutoRun,42,Data Source/Sink Comments,"■マスタ運転等ロボット特殊運転があればここに条件追加する
+■If has a robot special operation such as master operation, add here."
+P131_sampleOK,AutoRun,47,Data Source/Sink Comments,
+P131_sampleOK,MemoryFeeding,1,Data Source/Sink Comments,■記憶送り回路 =Memoryfeeding
+P131_sampleOK,MemoryFeeding,3,Data Source/Sink Comments,
+P131_sampleOK,MemoryFeeding,5,Data Source/Sink Comments,
+P131_sampleOK,MemoryFeeding,7,Data Source/Sink Comments,■RB記憶送り回路 =Robot Memory Feeding
+P131_sampleOK,MemoryFeeding,13,Data Source/Sink Comments,◆ﾏｽﾀﾁｪｯｸ記憶
+P131_sampleOK,HMI_Out,1,Data Source/Sink Comments,"■HMI_Out
+HMI_Deviceのﾛｰｶﾙ変数をHMI変数へ置換"
+P131_sampleOK,DeviceOut,1,Data Source/Sink Comments,"■RB1出力(標準エリア)　FBより(PORT512～547)
+■RB1Output(Standard area) from FB(PORT512～547)"
+P131_sampleOK,DeviceOut,9,Data Source/Sink Comments,"■RB1出力(カスタムエリア)　設備毎都度設計(PORT552-767)
+■RB1 output (custom area) Designed for each MC PORT552 to 767)"
+P131_sampleOK,MD_Out,1,Data Source/Sink Comments,"■P/Fへの出力 =OUTPUT TO  P/F
+■FUNCTION MD -> P/F"

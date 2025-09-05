@@ -1,0 +1,56 @@
+# Azure Container Instances Deployment Template
+apiVersion: 2021-03-01
+location: eastus
+name: rules-backend-fastapi
+properties:
+  containers:
+  - name: rules-backend
+    properties:
+      image: your-registry.azurecr.io/rules-backend-fastapi:latest
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGb: 2.0
+      ports:
+      - port: 8000
+        protocol: TCP
+      environmentVariables:
+      - name: PYTHONPATH
+        value: /app
+      - name: PYTHONUNBUFFERED
+        value: "1"
+      volumeMounts:
+      - name: input-files
+        mountPath: /app/input_files
+      - name: output-db
+        mountPath: /app/output_db
+      - name: logs
+        mountPath: /app/logs
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: TCP
+      port: 8000
+    dnsNameLabel: rules-backend-fastapi
+  volumes:
+  - name: input-files
+    azureFile:
+      shareName: input-files
+      storageAccountName: your-storage-account
+      storageAccountKey: your-storage-key
+  - name: output-db
+    azureFile:
+      shareName: output-db
+      storageAccountName: your-storage-account
+      storageAccountKey: your-storage-key
+  - name: logs
+    azureFile:
+      shareName: logs
+      storageAccountName: your-storage-account
+      storageAccountKey: your-storage-key
+tags:
+  Environment: Production
+  Application: Rules-Backend-FastAPI
+type: Microsoft.ContainerInstance/containerGroups

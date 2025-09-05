@@ -1,0 +1,137 @@
+name: Deploy to Azure Container Instances
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  AZURE_RESOURCE_GROUP: rules-backend-rg
+  AZURE_LOCATION: eastus
+  ACR_NAME: rulesbackendacr
+  CONTAINER_NAME: rules-backend-fastapi
+  ACI_NAME: rules-backend-aci
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.12.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests (if any)
+      run: |
+        # Add your test commands here
+        echo "No tests configured yet"
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create Azure Resource Group
+      run: |
+        az group create --name ${{ env.AZURE_RESOURCE_GROUP }} --location ${{ env.AZURE_LOCATION }}
+
+    - name: Create Azure Container Registry
+      run: |
+        az acr create \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.ACR_NAME }} \
+          --sku Basic \
+          --admin-enabled true || true
+
+    - name: Build and push Docker image
+      run: |
+        az acr build \
+          --registry ${{ env.ACR_NAME }} \
+          --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} \
+          --image ${{ env.CONTAINER_NAME }}:latest \
+          .
+
+    - name: Deploy to Azure Container Instances
+      run: |
+        ACR_LOGIN_SERVER=$(az acr show --name ${{ env.ACR_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --query "loginServer" --output tsv)
+        ACR_PASSWORD=$(az acr credential show --name ${{ env.ACR_NAME }} --query "passwords[0].value" --output tsv)
+        
+        # Delete existing container instance if it exists
+        az container delete \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.ACI_NAME }} \
+          --yes || true
+        
+        # Create new container instance
+        az container create \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.ACI_NAME }} \
+          --image ${ACR_LOGIN_SERVER}/${{ env.CONTAINER_NAME }}:latest \
+          --registry-login-server ${ACR_LOGIN_SERVER} \
+          --registry-username ${{ env.ACR_NAME }} \
+          --registry-password ${ACR_PASSWORD} \
+          --dns-name-label rules-backend-fastapi-${{ github.run_number }} \
+          --ports 8000 \
+          --cpu 1 \
+          --memory 2 \
+          --environment-variables PYTHONPATH=/app PYTHONUNBUFFERED=1
+
+    - name: Get deployment URL
+      run: |
+        FQDN=$(az container show --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.ACI_NAME }} --query "ipAddress.fqdn" --output tsv)
+        echo "🚀 Application deployed successfully!"
+        echo "📖 API Documentation: http://${FQDN}:8000/testing"
+        echo "🔌 WebSocket endpoint: ws://${FQDN}:8000/ws"
+        echo "::notice title=Deployment Success::Application URL: http://${FQDN}:8000"
+
+    - name: Health check
+      run: |
+        FQDN=$(az container show --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.ACI_NAME }} --query "ipAddress.fqdn" --output tsv)
+        
+        # Wait for container to be ready
+        echo "Waiting for container to be ready..."
+        sleep 30
+        
+        # Perform health check
+        for i in {1..5}; do
+          if curl -f "http://${FQDN}:8000/testing" > /dev/null 2>&1; then
+            echo "✅ Health check passed!"
+            exit 0
+          else
+            echo "Health check attempt $i failed, retrying in 10 seconds..."
+            sleep 10
+          fi
+        done
+        
+        echo "❌ Health check failed after 5 attempts"
+        az container logs --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.ACI_NAME }}
+        exit 1
+
+  cleanup-on-pr:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Cleanup PR deployment
+      run: |
+        # Clean up resources created for PR testing
+        az container delete \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.ACI_NAME }}-pr-${{ github.event.number }} \
+          --yes || true

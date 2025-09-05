@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  rules-backend:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Removed input_files volume as we use Azure Blob Storage
+      - ./output_db:/app/output_db
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app:/app/DEV
+      - PYTHONUNBUFFERED=1
+      # Azure Storage Configuration (override with your values)
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+      - AZURE_STORAGE_CONTAINER_NAME=${AZURE_STORAGE_CONTAINER_NAME:-input-files}
+      - FASTAPI_HOST=0.0.0.0
+      - FASTAPI_PORT=8000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      # CORS Configuration
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - CORS_ALLOW_CREDENTIALS=${CORS_ALLOW_CREDENTIALS:-true}
+      - CORS_ALLOW_METHODS=${CORS_ALLOW_METHODS:-GET,POST,PUT,DELETE,OPTIONS}
+      - CORS_ALLOW_HEADERS=${CORS_ALLOW_HEADERS:-*}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/testing"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: rules-backend-network
