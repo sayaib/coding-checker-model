@@ -430,12 +430,10 @@ class ConnectionManager:
         ]
         standard_df = pd.DataFrame(columns=columns)
         output_df = pd.DataFrame(columns=columns)
-        
+
         try:
             # Use local files from model_files directory instead of downloading
-            await self.broadcast(
-                "Loading data model files from local directory..."
-            )
+            await self.broadcast("Loading data model files from local directory...")
 
             # Use the local files directly from model_files directory
             data_model_local_path = Path(data_model_input_path)
@@ -472,6 +470,7 @@ class ConnectionManager:
 
             total_rules = len(in_list)
             rule_status = {}
+            all_outputs = []
 
             for idx, rl in enumerate(in_list, start=1):
                 function = function_map.get(rl)
@@ -499,12 +498,13 @@ class ConnectionManager:
                     ):
                         output_df = function_status["output_df"]
                         output_df = output_df[standard_df.columns]
-                        output_df.to_csv(
-                            output_file_path,
-                            mode="a",
-                            index=False,
-                            header=not output_file_path.exists(),
-                        )
+                        # output_df.to_csv(
+                        #     output_file_path,
+                        #     mode="a",
+                        #     index=False,
+                        #     header=not output_file_path.exists(),
+                        # )
+                        all_outputs.append(output_df)
                         rule_status[rl] = "SUCCESS"
 
                     else:
@@ -526,16 +526,19 @@ class ConnectionManager:
             await self.broadcast(f"Error during rule checking: {str(e)}")
             return {"error": f"Error during rule checking: {str(e)}"}
 
-        if output_df.empty:
+        if not all_outputs:
             output_json_data = []  # empty list
         else:
-            output_json_data = output_df[columns].to_dict(orient="records")
+            final_df = pd.concat(all_outputs, ignore_index=True)
+            output_json_data = final_df[columns].to_dict(orient="records")
 
         # Save results locally if output file exists
         if output_file_path.exists():
             await self.broadcast(f"Results saved to local file: {output_file_path}")
         else:
-            await self.broadcast("No results to save - all rules returned empty results")
+            await self.broadcast(
+                "No results to save - all rules returned empty results"
+            )
 
         # return rule_status
         return output_json_data
@@ -614,30 +617,34 @@ async def rule_checker_route(payload: rule_check_model, request: Request):
     try:
         folder_name = payload.folder_name
         in_list = payload.input_list
-        
+
         # Parse folder structure
         model_files_dir = Path("model_files")
         main_folder_path = model_files_dir / folder_name
-        
+
         if not main_folder_path.exists():
             return {"error": f"Folder {folder_name} not found in model_files directory"}
-        
+
         # Find the subfolder (should be the only directory inside main folder)
         subfolders = [item for item in main_folder_path.iterdir() if item.is_dir()]
         if not subfolders:
             return {"error": f"No subfolder found in {folder_name}"}
-        
+
         # Use the first subfolder as data_model_input_path
         data_model_input_path = str(subfolders[0])
-        
+
         # Find CSV files starting with "Task-" to get the full file path
         input_image = None
         for file in main_folder_path.iterdir():
-            if file.is_file() and file.name.endswith('.csv') and file.name.startswith('Task-'):
+            if (
+                file.is_file()
+                and file.name.endswith(".csv")
+                and file.name.startswith("Task-")
+            ):
                 # Use the full file path instead of just the extracted name
                 input_image = str(file)
                 break
-        
+
         if input_image is None:
             return {"error": f"No Task-*.csv file found in {folder_name}"}
 

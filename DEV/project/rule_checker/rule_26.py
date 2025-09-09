@@ -1068,10 +1068,12 @@ def execute_rule_26_programwise(input_program_file:str,
         program_df = pd.read_csv(input_program_file)
         input_image_program_df = pd.read_csv(input_image)
 
+        print("input_image_program_df",input_image_program_df)
+
         task_names = input_image_program_df[
             input_image_program_df["Unit"].astype(str).str.lower() == "screw"
             ]["Task name"].astype(str).str.lower().tolist()
-        
+        print("task_names",task_names)
         """
         for getting comment fo transformer block as it is needed for this rule to execute
         """
