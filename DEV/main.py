@@ -76,7 +76,11 @@ function_map = {
     "67": rule67,
     "70": rule70,
     "71": rule71,
+    "76": rule76,
     "80": rule80,
+    "90": rule90,
+    "93": rule93,
+    "94": rule94,
     "100": rule100,
 }
 
@@ -330,9 +334,11 @@ class ConnectionManager:
                 str(xml_file_path),  # convert Path to string if needed
             )
 
+            all_program_function_names = []
+
             # Step 4: data_modelling_program_wise
             await self.broadcast("Extracting data_modelling_program_wise: 10%")
-            await asyncio.to_thread(
+            program_names = await asyncio.to_thread(
                 data_modelling_program_wise,
                 result_from_ingest,
                 output_dir,
@@ -341,7 +347,7 @@ class ConnectionManager:
 
             # Step 5: data_modelling_function_wise
             await self.broadcast("Extracting data_modelling_function_wise: 40%")
-            await asyncio.to_thread(
+            function_names = await asyncio.to_thread(
                 data_modelling_function_wise,
                 result_from_ingest,
                 output_dir,
@@ -398,12 +404,16 @@ class ConnectionManager:
                     "Warning: Failed to upload source files to input-files container"
                 )
 
+            all_program_function_names.extend(program_names)
+            all_program_function_names.extend(function_names)
+
             # Final message
             await self.broadcast("✅ Data Modelling Completed: 100%")
 
             return {
                 "status": "Data Modelling Success",
                 "data_model_dir": blob_output_path,
+                "all_task_names": all_program_function_names,
             }
         except Exception as e:
             await self.broadcast(f"Error during data modelling: {str(e)}")
@@ -411,6 +421,7 @@ class ConnectionManager:
                 "status": "Data Modelling Failed",
                 "reason": f"Error during processing: {str(e)}",
                 "data_model_dir": "",
+                "all_task_names": [],
             }
 
     async def broadcast_rule_checker(

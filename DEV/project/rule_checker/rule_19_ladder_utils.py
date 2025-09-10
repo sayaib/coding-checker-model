@@ -8,7 +8,6 @@ import copy
 from itertools import combinations
 from collections import defaultdict, deque
 import ast
-import icecream as ic
 
 
 ############ Get series connection pairs #################

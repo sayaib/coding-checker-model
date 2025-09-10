@@ -58,7 +58,14 @@ def search_forward_from_inlist(target_operand, current_inlist, graph, visited=No
                 continue
             visited.add(node_id)
 
-            if node['operand'] == target_operand:
+            # if node['operand'] == target_operand:
+            # if 'negated' in node and node.get('operand') == target_operand and node['negated'] == 'false':
+            #     return True
+            if node.get('operand') == target_operand and node.get('negated') == 'true':
+                return False  # Invalid path due to negation
+
+            # ✅ Return True only if same operand AND negated is 'false'
+            if node.get('operand') == target_operand and node.get('negated') == 'false':
                 return True
 
             if search_forward_from_inlist(target_operand, node['in_list'], graph, visited):

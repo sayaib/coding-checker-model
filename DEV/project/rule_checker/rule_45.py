@@ -3,7 +3,7 @@ import json
 import pandas as pd
 from typing import *
 import re
-from loguru import logger
+from ...main import logger
 import polars as pl
 import pprint
 from rich import print as rprint
@@ -66,7 +66,7 @@ ng_content = {
     }
 
 # def fetch_matched_rung_no_without_total(fault_section_rung_group_df:pd.DataFrame, last_rung_no:int, all_comment:List, total_comment:str):
-#     # pass    
+#     # pass
 #     all_comment_detail_output = {}
 #     for _, fault_df in fault_section_rung_group_df:
 #         rung_name_str = str(fault_df['RUNG_NAME'].iloc[0])
@@ -74,13 +74,9 @@ ng_content = {
 #             pass
 #         if regex_pattern_check(rung_name_str, [emergency_stop_comment]) and not regex_pattern_check(rung_name_str, [independent_device_comment]) and not regex_pattern_check(rung_name_str, [total_comment]):
 #             pass
-        
+
 #         if regex_pattern_check(rung_name_str, [emergency_stop_comment]) and regex_pattern_check(rung_name_str, [independent_device_comment]) and not regex_pattern_check(rung_name_str, [total_comment]):
 #             pass
-
-
-        
-
 
 
 # def execute_rule_45_programwise(input_program_file:str, input_program_comment_file:str) -> pd.DataFrame:
@@ -88,7 +84,7 @@ ng_content = {
 #     program_df = pd.read_csv(input_program_file)
 #     all_comment = [automatic_stop_comment, cycle_stop_comment, fault_stop_comment, warning_comment, operation_fault_comment]
 
-    
+
 #     unique_program_values = program_df["PROGRAM"].unique()
 
 #     for program_name in unique_program_values:
@@ -101,14 +97,6 @@ ng_content = {
 #                 last_rung_no = int(fault_section_df.iloc[-1]["RUNG"])
 #                 fault_section_rung_group_df = fault_section_df.groupby("RUNG_NAME", sort=False)
 #                 all_rung_comment_filled_rung_no_without_total = fetch_matched_rung_no_without_total(fault_section_rung_group_df=fault_section_rung_group_df, all_comment=all_comment, total_comment=total_comment,  last_rung_no=last_rung_no)
-                
-
-
-
-
-
-
-
 
 
 # # ============================== Program-Wise Function Definitions ===============================
@@ -149,7 +137,7 @@ def check_detail_1_programwise(all_rung_comment_filled_details_without_total:dic
         "rung_no": -1,
         "target_outcoil": "",
     }
-    
+
 def check_detail_2_programwise(fault_section_df:pd.DataFrame, all_rung_comment_filled_details_without_total:dict):
     
     status = "OK"
@@ -810,7 +798,7 @@ def check_detail_10_programwise(fault_section_df:pd.DataFrame, all_rung_comment_
             "rung_no": -1,
             "target_outcoil": all_result,
         }
-            
+
 def check_detail_11_programwise(fault_section_df:pd.DataFrame, all_rung_comment_details_with_total:dict):
 
     # all_contact_total = []
@@ -932,12 +920,11 @@ def check_detail_11_programwise(fault_section_df:pd.DataFrame, all_rung_comment_
         }
 
 
-
 """
 below code if emergency stop is there and not independence device check in code 
 """
 # def check_detail_13_programwise(fault_section_rung_group_df:pd.DataFrame, fault_section_df:pd.DataFrame, deviceout_section_df:pd.DataFrame, automain_section_df:pd.DataFrame, program_name:str, program_comment_data:dict, emergency_stop_comment:str, total_comment:str, independent_device_comment:str, autorun_comment:str, condition_comment:str):
-    
+
 #     rule_13_1 = False
 #     rule_13_2 = False
 
@@ -950,18 +937,18 @@ below code if emergency stop is there and not independence device check in code
 #             emergency_stop_without_independent_device_exist = True
 #             emergency_stop_without_independent_device_exist_rung_number = int(fault_df['RUNG'].iloc[0])
 #             break
-    
+
 #     if emergency_stop_without_independent_device_exist:
 #         """
 #         checking in deviceout section
 #         """
 #         emergency_stop_coil_df = fault_section_df[(fault_section_df['RUNG']==emergency_stop_without_independent_device_exist_rung_number) &
 #                                                   (fault_section_df['OBJECT_TYPE_LIST'].str.lower()=='coil') ]
-        
+
 #         if not emergency_stop_coil_df.empty:
 #             first_row_attr = ast.literal_eval(emergency_stop_coil_df.iloc[0]['ATTRIBUTES'])
 #             emergency_stop_without_independent_device_outcoil = first_row_attr.get('operand')
-            
+
 
 #         if emergency_stop_without_independent_device_outcoil:
 #             devicein_emergency_stop_comment_present = False
@@ -976,7 +963,7 @@ below code if emergency stop is there and not independence device check in code
 #                         devicein_emergency_stop_comment_present = True
 #                         devicein_emergency_stop_comment_present_rung_number = coil_df['RUNG']
 #                         break
-                
+
 #                 if devicein_emergency_stop_comment_present:
 #                     contact_df = deviceout_section_df[deviceout_section_df['RUNG']==devicein_emergency_stop_comment_present_rung_number]
 #                     for _, contact_row in contact_df.iterrows():
@@ -986,7 +973,7 @@ below code if emergency stop is there and not independence device check in code
 #                         if contact_operand and isinstance(contact_operand,str) and contact_operand == emergency_stop_without_independent_device_outcoil and negated_operand == 'false':
 #                             rule_13_1 = True
 #                             break
-                
+
 #                 if rule_13_1:
 #                     break
 
@@ -1002,7 +989,7 @@ below code if emergency stop is there and not independence device check in code
 #                         devicein_autorun_condition_comment_present = True
 #                         devicein_autorun_condition_comment_present_rung_number = coil_df['RUNG']
 #                         break
-                
+
 #                 if devicein_autorun_condition_comment_present:
 #                     contact_df = deviceout_section_df[deviceout_section_df['RUNG']==devicein_autorun_condition_comment_present_rung_number]
 #                     for _, contact_row in contact_df.iterrows():
@@ -1015,7 +1002,7 @@ below code if emergency stop is there and not independence device check in code
 
 #                 if rule_13_2:
 #                     break
-    
+
 #     if rule_13_1 and rule_13_2:
 #         return {
 #             "status": "OK",
@@ -1085,13 +1072,6 @@ def check_detail_12_programwise(program_df:pd.DataFrame, mdout_section_df:pd.Dat
             md_outcoil_list[k] = ""
 
     print("md_outcoil_list",md_outcoil_list)
-
-
-
-
-
-
-
 
 
 def check_detail_13_programwise(fault_section_df:pd.DataFrame, deviceout_section_df:pd.DataFrame, automain_section_df:pd.DataFrame, program_name:str, program_comment_data:dict, emergency_stop_comment:str, total_comment:str, independent_device_comment:str, autorun_comment:str, condition_comment:str, emergency_stop_total_outcoil_data:List):
@@ -1175,8 +1155,7 @@ def check_detail_13_programwise(fault_section_df:pd.DataFrame, deviceout_section
             "target_outcoil": "",
         }
 
-    
-               
+
 def fetch_matched_rung_no_without_total(fault_section_rung_group_df:pd.DataFrame, all_rung_comment_details_without_total:dict) -> dict:
 
     for _, fault_df in fault_section_rung_group_df:
@@ -1277,7 +1256,6 @@ def filled_outcoil_detail_without_total(fault_section_df, all_rung_comment_fille
         all_rung_comment_filled_rung_no_next_rung[comment_key]['outcoil'] = outcoil
 
     return all_rung_comment_filled_rung_no_next_rung
-
 
 
 def fetch_matched_rung_no_with_total(fault_section_rung_group_df:pd.DataFrame, all_rung_comment_details_with_total:dict) -> dict:
@@ -1394,8 +1372,9 @@ def execute_rule_45_programwise(input_program_file:str, input_program_comment_fi
 
         print("_"*100)
         print("program_name",program_name)
+        unique_section_name = program_df[program_df['PROGRAM'] == program_name]['BODY'].str.lower().unique()
 
-        if program_name == "P111_XXXPRS_Function1":
+        if 'fault' in unique_section_name:
 
             all_rung_comment_details_without_total = {
                 "emergency_stop" : { "rung_no": -1, "next_rung" : -1, "range":"", "outcoil":[]},
@@ -1480,18 +1459,18 @@ def execute_rule_45_programwise(input_program_file:str, input_program_comment_fi
 
 
     return {}
-if __name__=='__main__':
+# if __name__=='__main__':
 
-    input_program_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_programwise.csv"
-    input_program_comment_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_programwise.json"
-    input_function_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_functionwise.csv"
-    input_function_comment_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_functionwise.json"
-    output_folder_path = 'C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Rules_implementation/pythoncode/output_csv/'
-    program_output_file = 'Rule_45_programwise.csv'
-    function_output_file = 'Rule_45_functionwise.csv'
+#     input_program_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_programwise.csv"
+#     input_program_comment_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_programwise.json"
+#     input_function_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_functionwise.csv"
+#     input_function_comment_file = "C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Data_Modelling/version3/data_model_Rule_44_56/data_model_Rule_44_56_functionwise.json"
+#     output_folder_path = 'C:/Users/aniln/OneDrive - OPTIMIZED SOLUTIONS LTD/DENSO/Rules_implementation/pythoncode/output_csv/'
+#     program_output_file = 'Rule_45_programwise.csv'
+#     function_output_file = 'Rule_45_functionwise.csv'
 
-    final_csv = execute_rule_45_programwise(input_program_file=input_program_file, input_program_comment_file=input_program_comment_file)
-    # final_csv.to_csv(f"{output_folder_path}/{program_output_file}", index=False, encoding='utf-8-sig')
+#     final_csv = execute_rule_45_programwise(input_program_file=input_program_file, input_program_comment_file=input_program_comment_file)
+#     # final_csv.to_csv(f"{output_folder_path}/{program_output_file}", index=False, encoding='utf-8-sig')
 
-    # final_csv = execute_rule_45_functionwise(input_function_file=input_function_file, input_function_comment_file=input_function_comment_file)
-    # final_csv.to_csv(f"{output_folder_path}/{function_output_file}", index=False, encoding='utf-8-sig')
+#     # final_csv = execute_rule_45_functionwise(input_function_file=input_function_file, input_function_comment_file=input_function_comment_file)
+#     # final_csv.to_csv(f"{output_folder_path}/{function_output_file}", index=False, encoding='utf-8-sig')

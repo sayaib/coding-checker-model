@@ -15,51 +15,45 @@ def search_forward_from_inlist(target_operand, current_inlist, graph, visited=No
                 continue
             visited.add(node_id)
 
+            # if node['operand'] == target_operand:
+            # if 'negated' in node and node.get('operand') == target_operand and node['negated'] == 'false':
+            #     return True
             if node.get('operand') == target_operand and node.get('negated') == 'true':
                 return False  # Invalid path due to negation
 
             # ✅ Return True only if same operand AND negated is 'false'
-            if (
-                node.get('operand') == target_operand
-                and node.get('negated') == 'false'
-                and any(out in current_inlist for out in node['out_list'])  # direct connection check
-            ):
+            if node.get('operand') == target_operand and node.get('negated') == 'false':
                 return True
-
 
             if search_forward_from_inlist(target_operand, node['in_list'], graph, visited):
                 return True
 
     return False
 
-
 def check_self_holding(ladder_df: pd.DataFrame) -> List[str]:
+
+    # Filter coil and contact rows
     coil_df = ladder_df[ladder_df["OBJECT_TYPE_LIST"] == "Coil"].copy()
     contact_df = ladder_df[ladder_df["OBJECT_TYPE_LIST"] == "Contact"].copy()
 
+    # Convert stringified dicts to real dicts
     coil_df["ATTR_DICT"] = coil_df["ATTRIBUTES"].apply(ast.literal_eval)
-    contact_df["ATTR_DICT"] = contact_df["ATTRIBUTES"].apply(ast.literal_eval)
+    contact_attr_list = contact_df["ATTRIBUTES"].tolist()
 
+    # Extract fields from coil dicts
     coil_df["operand"] = coil_df["ATTR_DICT"].apply(lambda x: x.get("operand", "NONE"))
     coil_df["in_list"] = coil_df["ATTR_DICT"].apply(lambda x: x.get("in_list", []))
 
-    contact_df["operand"] = contact_df["ATTR_DICT"].apply(lambda x: x.get("operand", "NONE"))
-    contact_df["out_list"] = contact_df["ATTR_DICT"].apply(lambda x: x.get("out_list", []))
-    contact_df["negated"] = contact_df["ATTR_DICT"].apply(lambda x: x.get("negated", "false"))
+    # Apply self-holding check using search function
+    coil_df["self_holding"] = coil_df.apply(
+        lambda row: search_forward_from_inlist(row["operand"], row["in_list"], contact_attr_list),
+        axis=1
+    )
 
-    self_holding_operands = []
+    # Get operands that are self-holding
+    self_holding_data = coil_df[coil_df["self_holding"] == True]["operand"].tolist()
 
-    for _, coil_row in coil_df.iterrows():
-        for _, contact_row in contact_df.iterrows():
-            if (
-                coil_row["operand"] == contact_row["operand"]        # same variable
-                and contact_row["negated"] == "false"                # not negated
-                and any(out in coil_row["in_list"] for out in contact_row["out_list"])  # direct connection
-            ):
-                self_holding_operands.append(coil_row["operand"])
-                break  # no need to check more contacts for this coil
-
-    return self_holding_operands
+    return self_holding_data
 
 # def check_self_holding(ladder_df: pd.DataFrame) -> List[str]:
 

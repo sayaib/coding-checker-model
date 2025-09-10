@@ -187,6 +187,7 @@ def extract_variable_comment_programwise(
             array_rgx_pattern = "ARRAY"
             array_rgx_pattern_small = "array"
             array_variant_1_pattern = "sRB_OUT"
+            array_variant_2_pattern = "sRB_IN"
 
             array_flag = 0
             access_type = "NONE"
@@ -216,6 +217,7 @@ def extract_variable_comment_programwise(
                             re.search(array_rgx_pattern, variable_type.text),
                             re.search(array_rgx_pattern_small, variable_type.text),
                             re.search(array_variant_1_pattern, variable_type.text),
+                            re.search(array_variant_2_pattern, variable_type.text),
                         ]
                     ):
 
