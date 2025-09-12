@@ -557,7 +557,7 @@ def store_program_csv_results(
 
 # ============================== Program-Wise Execution Starts Here ===============================
 def execute_rule_4_3_program_wise(
-    input_file: str, program_comment_file: str, input_image: str
+    input_file: str, program_comment_file: str, input_image: str = None
 ):
 
     logger.info("Executing Rule 4.3 program wise")

@@ -1144,7 +1144,7 @@ def execute_rule_25_programwise(
     input_program_file: str,
     input_program_comment_file: str,
     input_datasource_program_file: str,
-    input_image: str,
+    input_image: str=None,
 ) -> pd.DataFrame:
 
     logger.info("Starting execution of Rule 25")

@@ -656,8 +656,8 @@ async def rule_checker_route(payload: rule_check_model, request: Request):
                 input_image = str(file)
                 break
 
-        if input_image is None:
-            return {"error": f"No Task-*.csv file found in {folder_name}"}
+        # If Task-*.csv file is not found, continue without it instead of returning an error
+        # This allows the coding checker process to continue even if the Task-csv file doesn't exist
 
         print("*" * 100)
         print(
@@ -674,6 +674,8 @@ async def rule_checker_route(payload: rule_check_model, request: Request):
         if not manager.active_connections:
             return {"status": "No clients connected"}
 
+        # Pass input_image to broadcast_rule_checker even if it's None
+        # The rule checker functions will need to handle the case where input_image is None
         output_json_data = await manager.broadcast_rule_checker(
             data_model_input_path, in_list, input_image
         )

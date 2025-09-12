@@ -579,14 +579,19 @@ def store_program_csv_results(
 
 # ============================== Program-Wise Execution Starts Here ===============================
 def execute_rule_4_2_program_wise(
-    input_file: str, program_comment_file: str, input_image: str
+    input_file: str, program_comment_file: str, input_image: str = None
 ):
 
     logger.info("Executing Rule 4.2 program wise")
 
     try:
         program_df = pd.read_csv(input_file)
-        input_image_program_df = pd.read_csv(input_image)
+        # Check if input_image is provided
+        if input_image is None:
+            # If Task-csv file is not provided, create an empty DataFrame with required columns
+            input_image_program_df = pd.DataFrame(columns=["Unit", "Task name"])
+        else:
+            input_image_program_df = pd.read_csv(input_image)
         with open(program_comment_file, "r", encoding="utf-8") as file:
             program_comment_data = json.load(file)
 

@@ -1112,7 +1112,7 @@ def store_program_csv_results_programwise(
 
 # ============================== Program-Wise Execution Starts Here ===============================
 def execute_rule_27_programwise(
-    input_program_file: str, input_program_comment_file: str, input_image: str
+    input_program_file: str, input_program_comment_file: str, input_image: str=None
 ) -> pd.DataFrame:
 
     logger.info("Starting execution of Rule 27")

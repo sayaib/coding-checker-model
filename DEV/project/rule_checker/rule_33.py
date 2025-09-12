@@ -90,7 +90,7 @@ def check_detail_2_programwise(
 
 # ============================== Program and Function-Wise Execution Starts Here ===============================
 def execute_rule_33(
-    input_program_file: str, input_image: str, program_key: str, body_type_key: str
+    input_program_file: str, input_image: str=None, program_key: str="PROGRAM", body_type_key: str="BODY"
 ) -> pd.DataFrame:
 
     logger.info("Rule 1 Start executing rule 1 program wise")

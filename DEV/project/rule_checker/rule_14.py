@@ -17,7 +17,7 @@ rule_14_check_item = "Rule of Process Complete / Good or Bad Result Set"
 
 #######################3 Function for execution ##################################
 def execute_rule_14(
-    input_file: str, input_image: str, program_key: str, body_type_key: str
+    input_file: str, input_image: str=None, program_key: str="PROGRAM", body_type_key: str="BODY"
 ) -> None:
 
     logger.info("Executing Rule 14")

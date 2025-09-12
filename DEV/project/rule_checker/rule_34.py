@@ -237,7 +237,7 @@ def check_detail_2_programwise(
 
 # ============================== Program-Wise Execution Starts Here ===============================
 def execute_rule_34_programwise(
-    input_program_file: str, program_comment_file: str, input_image: str
+    input_program_file: str, program_comment_file: str, input_image: str=None
 ) -> pd.DataFrame:
 
     logger.info("Rule 34 Start executing rule 1 program wise")
