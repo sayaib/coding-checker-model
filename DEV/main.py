@@ -254,9 +254,50 @@ class ConnectionManager:
                         f"Folder validation successful. Downloading {input_dir} to model_files directory..."
                     )
 
+                    # Create progress callback for WebSocket updates
+                    async def download_progress_callback(progress_data):
+                        if isinstance(progress_data, dict):
+                            progress_type = progress_data.get('type')
+                            
+                            if progress_type == 'file_start':
+                                await self.broadcast(
+                                    f"Starting download: {progress_data['current_file']} ({progress_data['file_index']}/{progress_data['total_files']})"
+                                )
+                            elif progress_type == 'file_progress':
+                                # Calculate percentages
+                                file_percent = (progress_data['file_progress'] / progress_data['file_total']) * 100 if progress_data['file_total'] > 0 else 0
+                                overall_percent = (progress_data['overall_progress'] / progress_data['overall_total']) * 100 if progress_data['overall_total'] > 0 else 0
+                                
+                                # Format file size
+                                def format_bytes(bytes_val):
+                                    for unit in ['B', 'KB', 'MB', 'GB']:
+                                        if bytes_val < 1024.0:
+                                            return f"{bytes_val:.1f} {unit}"
+                                        bytes_val /= 1024.0
+                                    return f"{bytes_val:.1f} TB"
+                                
+                                await self.broadcast(
+                                    f"Downloading {progress_data['current_file']}: {file_percent:.1f}% "
+                                    f"({format_bytes(progress_data['file_progress'])}/{format_bytes(progress_data['file_total'])}) | "
+                                    f"Overall: {overall_percent:.1f}% ({progress_data['files_completed']}/{progress_data['total_files']} files)"
+                                )
+                            elif progress_type == 'file_complete':
+                                await self.broadcast(
+                                    f"Completed: {progress_data['current_file']} ({progress_data['files_completed']}/{progress_data['total_files']} files done)"
+                                )
+                            elif progress_type == 'download_complete':
+                                if progress_data['success']:
+                                    await self.broadcast(
+                                        f"Download completed successfully! All {progress_data['total_files']} files downloaded."
+                                    )
+                                else:
+                                    await self.broadcast(
+                                        f"Download completed with issues. {progress_data['files_completed']}/{progress_data['total_files']} files downloaded."
+                                    )
+
                     # Download files from Azure Blob Storage directly to model_files
                     download_success = await storage_manager.download_directory(
-                        input_dir, str(local_model_path)
+                        input_dir, str(local_model_path), download_progress_callback
                     )
 
                     if not download_success:

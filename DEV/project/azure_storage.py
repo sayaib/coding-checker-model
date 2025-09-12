@@ -98,13 +98,14 @@ class AzureBlobStorageManager:
             logger.error(f"Failed to upload {local_file_path} to {blob_name}: {e}")
             return False
     
-    async def download_file(self, blob_name: str, local_file_path: str) -> bool:
+    async def download_file(self, blob_name: str, local_file_path: str, progress_callback=None) -> bool:
         """
         Download a file from Azure Blob Storage
         
         Args:
             blob_name: Name of the blob in storage
             local_file_path: Path where to save the file locally
+            progress_callback: Optional callback function for progress updates (current_bytes, total_bytes, filename)
         
         Returns:
             bool: True if successful, False otherwise
@@ -119,13 +120,49 @@ class AzureBlobStorageManager:
             # Ensure local directory exists
             os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
             
+            # Get blob properties to determine file size
+            blob_properties = await asyncio.to_thread(blob_client.get_blob_properties)
+            total_size = blob_properties.size
+            
             with open(local_file_path, 'wb') as download_file:
                 download_stream = await asyncio.to_thread(blob_client.download_blob)
-                # Before (causing the error):
-                download_file.write(download_stream.readall())
                 
-                # After (fixed):
-                await asyncio.to_thread(lambda: download_file.write(download_stream.readall()))
+                if progress_callback and total_size > 0:
+                    # Download in chunks to track progress
+                    chunk_size = 8192  # 8KB chunks
+                    downloaded_bytes = 0
+                    last_update_time = 0
+                    last_update_bytes = 0
+                    update_interval = 5.0  # Update every 5 seconds
+                    min_progress_threshold = 0.05  # Update when 5% progress is made
+                    
+                    # Send initial progress
+                    await progress_callback(0, total_size, os.path.basename(blob_name))
+                    
+                    # Read and write in chunks
+                    while True:
+                        chunk = await asyncio.to_thread(download_stream.read, chunk_size)
+                        if not chunk:
+                            break
+                        
+                        await asyncio.to_thread(download_file.write, chunk)
+                        downloaded_bytes += len(chunk)
+                        
+                        # Throttle progress updates
+                        current_time = asyncio.get_event_loop().time()
+                        progress_since_last = (downloaded_bytes - last_update_bytes) / total_size
+                        time_since_last = current_time - last_update_time
+                        
+                        # Send update if enough time passed OR significant progress made
+                        if (time_since_last >= update_interval or 
+                            progress_since_last >= min_progress_threshold or 
+                            downloaded_bytes == total_size):  # Always send final update
+                            await progress_callback(downloaded_bytes, total_size, os.path.basename(blob_name))
+                            last_update_time = current_time
+                            last_update_bytes = downloaded_bytes
+                else:
+                    # Fallback to original method if no progress callback
+                    await asyncio.to_thread(lambda: download_file.write(download_stream.readall()))
             
             logger.info(f"Successfully downloaded {blob_name} to {local_file_path}")
             return True
@@ -265,13 +302,14 @@ class AzureBlobStorageManager:
                 "pdf_files": []
             }
     
-    async def download_directory(self, blob_prefix: str, local_directory: str) -> bool:
+    async def download_directory(self, blob_prefix: str, local_directory: str, progress_callback=None) -> bool:
         """
         Download all blobs with a specific prefix to a local directory
         
         Args:
             blob_prefix: Prefix of blobs to download (acts as directory path)
             local_directory: Local directory to download files to
+            progress_callback: Optional callback function for progress updates
         
         Returns:
             bool: True if all downloads successful, False otherwise
@@ -283,14 +321,97 @@ class AzureBlobStorageManager:
                 logger.warning(f"No blobs found with prefix '{blob_prefix}'")
                 return False
             
+            # Get total size of all blobs for overall progress tracking
+            total_size = 0
+            blob_sizes = {}
+            
+            if progress_callback:
+                for blob_name in blobs:
+                    try:
+                        blob_client = self.container_client.get_blob_client(blob_name)
+                        blob_properties = await asyncio.to_thread(blob_client.get_blob_properties)
+                        blob_sizes[blob_name] = blob_properties.size
+                        total_size += blob_properties.size
+                    except Exception as e:
+                        logger.warning(f"Could not get size for blob {blob_name}: {e}")
+                        blob_sizes[blob_name] = 0
+            
             success_count = 0
-            for blob_name in blobs:
+            downloaded_bytes = 0
+            last_progress_update_time = 0
+            last_progress_bytes = 0
+            progress_update_interval = 10.0  # Update every 5 seconds
+            min_progress_change = 0.10  # Update when 5% overall progress is made
+            
+            # Create a wrapper progress callback for individual files
+            async def file_progress_callback(current_bytes, file_total_bytes, filename):
+                nonlocal last_progress_update_time, last_progress_bytes
+                
+                if progress_callback:
+                    # Calculate overall progress
+                    file_downloaded = current_bytes
+                    overall_downloaded = downloaded_bytes + file_downloaded
+                    
+                    # Throttle progress updates
+                    current_time = asyncio.get_event_loop().time()
+                    progress_since_last = (overall_downloaded - last_progress_bytes) / total_size if total_size > 0 else 0
+                    time_since_last = current_time - last_progress_update_time
+                    
+                    # Send update if enough time passed OR significant progress made OR file completed
+                    if (time_since_last >= progress_update_interval or 
+                        progress_since_last >= min_progress_change or 
+                        current_bytes == file_total_bytes):  # Always send when file completes
+                        
+                        await progress_callback({
+                            'type': 'file_progress',
+                            'current_file': filename,
+                            'file_progress': current_bytes,
+                            'file_total': file_total_bytes,
+                            'overall_progress': overall_downloaded,
+                            'overall_total': total_size,
+                            'files_completed': success_count,
+                            'total_files': len(blobs)
+                        })
+                        
+                        last_progress_update_time = current_time
+                        last_progress_bytes = overall_downloaded
+            
+            for i, blob_name in enumerate(blobs):
                 # Create relative path by removing prefix
                 relative_path = blob_name[len(blob_prefix):].lstrip('/')
                 local_file_path = os.path.join(local_directory, relative_path)
                 
-                if await self.download_file(blob_name, local_file_path):
+                # Send file start notification
+                if progress_callback:
+                    await progress_callback({
+                        'type': 'file_start',
+                        'current_file': os.path.basename(blob_name),
+                        'file_index': i + 1,
+                        'total_files': len(blobs)
+                    })
+                
+                if await self.download_file(blob_name, local_file_path, file_progress_callback):
                     success_count += 1
+                    # Add this file's size to downloaded bytes
+                    downloaded_bytes += blob_sizes.get(blob_name, 0)
+                    
+                    # Send file completion notification
+                    if progress_callback:
+                        await progress_callback({
+                            'type': 'file_complete',
+                            'current_file': os.path.basename(blob_name),
+                            'files_completed': success_count,
+                            'total_files': len(blobs)
+                        })
+            
+            # Send final completion notification
+            if progress_callback:
+                await progress_callback({
+                    'type': 'download_complete',
+                    'files_completed': success_count,
+                    'total_files': len(blobs),
+                    'success': success_count == len(blobs)
+                })
             
             logger.info(f"Downloaded {success_count}/{len(blobs)} files from '{blob_prefix}'")
             return success_count == len(blobs)
