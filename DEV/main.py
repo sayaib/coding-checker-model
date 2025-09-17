@@ -175,9 +175,13 @@ class ConnectionManager:
             output_dir.mkdir(parents=True, exist_ok=True)
 
             # Process the files directly from local directory
-            return await self._process_data_modelling(
+            result = await self._process_data_modelling(
                 xml_file_path, dest_file_name, output_dir, input_path
             )
+            
+            # Broadcast the final completion response
+            await self.broadcast(f"Final Result: {result}")
+            return result
 
         else:
             # Input is a blob storage folder name, check if already exists in model_files
@@ -225,9 +229,13 @@ class ConnectionManager:
                 output_dir.mkdir(parents=True, exist_ok=True)
 
                 # Process the files from existing local directory
-                return await self._process_data_modelling(
+                result = await self._process_data_modelling(
                     xml_file_path, dest_file_name, output_dir, local_model_path
                 )
+                
+                # Broadcast the final completion response
+                await self.broadcast(f"Final Result: {result}")
+                return result
 
             else:
                 # Folder doesn't exist locally, validate contents before downloading
@@ -349,9 +357,13 @@ class ConnectionManager:
                     output_dir.mkdir(parents=True, exist_ok=True)
 
                     # Process the files from downloaded directory
-                    return await self._process_data_modelling(
+                    result = await self._process_data_modelling(
                         xml_file_path, dest_file_name, output_dir, local_model_path
                     )
+                    
+                    # Broadcast the final completion response
+                    await self.broadcast(f"Final Result: {result}")
+                    return result
 
                 except Exception as e:
                     await self.broadcast(
