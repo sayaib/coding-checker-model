@@ -17,3 +17,7 @@ class data_model(BaseModel):
 class rule_check_model(BaseModel):
     folder_name: str  # e.g., "Coding Checker_Rule26NG_250703-1756818977690"
     input_list: List[Any]
+
+
+class download_task_csv_model(BaseModel):
+    folder_name: str  # e.g., "Coding Checker_Rule26"

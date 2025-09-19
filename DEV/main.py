@@ -739,6 +739,91 @@ async def rule_checker_route(payload: rule_check_model, request: Request):
         return {"error": f"Rule Checker failed: {str(e)}"}
 
 
+@app.post("/download_task_csv")
+async def download_task_csv_route(payload: download_task_csv_model, request: Request):
+    """
+    Download Task-*.csv file from Azure Blob Storage to model_files folder
+    
+    Args:
+        payload: Contains folder_name (e.g., "Coding Checker_Rule26")
+    
+    Returns:
+        JSON response with success/error status and file path
+    """
+    try:
+        folder_name = payload.folder_name
+        logger.info(f"Starting download for folder: {folder_name}")
+        
+        # Check if Azure storage is enabled
+        if not storage_manager.enabled:
+            return {
+                "error": "Azure Blob Storage is not configured or enabled",
+                "status": "failed"
+            }
+        
+        # List blobs with the folder prefix to find Task-*.csv files
+        blob_prefix = f"{folder_name}/"
+        blobs = await storage_manager.list_blobs(prefix=blob_prefix)
+        
+        if not blobs:
+            return {
+                "error": f"No files found in blob storage for folder: {folder_name}",
+                "status": "failed"
+            }
+        
+        # Find Task-*.csv file in the blob list
+        task_csv_blob = None
+        for blob in blobs:
+            blob_filename = os.path.basename(blob)
+            if blob_filename.startswith("Task-") and blob_filename.endswith(".csv"):
+                task_csv_blob = blob
+                break
+        
+        if not task_csv_blob:
+            return {
+                "error": f"No Task-*.csv file found in blob storage for folder: {folder_name}",
+                "status": "failed",
+                "available_files": [os.path.basename(blob) for blob in blobs]
+            }
+        
+        # Create local directory structure
+        model_files_dir = Path("model_files")
+        local_folder_path = model_files_dir / folder_name
+        local_folder_path.mkdir(parents=True, exist_ok=True)
+        
+        # Set local file path
+        task_csv_filename = os.path.basename(task_csv_blob)
+        local_file_path = local_folder_path / task_csv_filename
+        
+        # Download the file
+        logger.info(f"Downloading {task_csv_blob} to {local_file_path}")
+        success = await storage_manager.download_file(
+            blob_name=task_csv_blob,
+            local_file_path=str(local_file_path)
+        )
+        
+        if success:
+            return {
+                "status": "success",
+                "message": f"Successfully downloaded {task_csv_filename}",
+                "folder_name": folder_name,
+                "file_path": str(local_file_path),
+                "file_name": task_csv_filename
+            }
+        else:
+            return {
+                "error": f"Failed to download {task_csv_filename} from blob storage",
+                "status": "failed"
+            }
+            
+    except Exception as e:
+        logger.error(f"Error in download_task_csv_route: {str(e)}")
+        return {
+            "error": f"Download failed: {str(e)}",
+            "status": "failed"
+        }
+
+
 ###########Throw the data to Web socket ##########################33
 
 
